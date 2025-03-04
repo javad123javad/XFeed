@@ -6,6 +6,8 @@ struct ChannelInfo: public QObject
 {
     Q_OBJECT
 public:
+    ChannelInfo(){};
+    ~ChannelInfo() override{}
     ChannelInfo(ChannelInfo& chInfo)
     {
         chName_ = chInfo.chName_;
@@ -17,9 +19,9 @@ public:
     {
         if(this != &other)
         {
-            this->chAddr_ = other.chAddr_;
-            this->chName_ = other.chName_;
-            this->chComment_ = other.chComment_;
+            this->setChAddr(other.chAddr_);
+            this->setChName(other.chName_);
+            this->setChComment(other.chComment_);
         }
 
         return *this;
@@ -42,22 +44,31 @@ public:
 
     void setChName(const QString &newChName)
     {
+        if(newChName.isEmpty())
+            throw std::invalid_argument("Invalid channel name, channel name cannot be empty.");
+
         chName_ = newChName;
     }
 
-    QString chAddr() const
+    QString getChAddr() const
     {
         return chAddr_;
     }
 
     void setChAddr(const QString &newChAddr)
     {
+        if(newChAddr.isEmpty())
+            throw std::invalid_argument("Invalid channel address, channel address cannot be empty.");
         chAddr_ = newChAddr;
     }
+    QString chFolder() const;
+    void setChFolder(const QString &newChFolder);
+
 private:
     QString chName_;
     QString chAddr_;
     QString chComment_;
+    QString chFolder_;
 };
 
 #endif // CHANNELINFO_H
