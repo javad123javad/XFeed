@@ -29,6 +29,16 @@ if(${QT_VERSION_MAJOR} GREATER_EQUAL 6)
         xfeedch.h xfeedch.cpp
         xfeedxmlreader.h xfeedxmlreader.cpp
         channelinfo.h channelinfo.cpp
+        addchannel.ui
+        addchannel.cpp
+        addchannel.h
+
+        xfeedfolder.h
+        xfeedfolder.cpp
+        addfolder.ui
+        addfolder.h
+        addfolder.cpp
+        xjsonadapter.h xjsonadapter.cpp
     )
 # Define target properties for Android with Qt 6 as:
 #    set_property(TARGET XMLFeedReader APPEND PROPERTY QT_ANDROID_PACKAGE_SOURCE_DIR
@@ -78,7 +88,17 @@ if(QT_VERSION_MAJOR EQUAL 6)
 endif()
 
 qt_add_executable(XFeed_Test
-    xfeedtest_channelinfo.cpp
+    channelinfo.h channelinfo.cpp
+    xfeedchannel.h  xfeedchannel.cpp
+    xfeedch.h   xfeedch.cpp
+    xfeedfolder.cpp xfeedfolder.h
+    xfeedreader.cpp xfeedreader.h
+    xfeedxmlreader.cpp xfeedxmlreader.h
+    tests/xfeedtest.cpp
+    tests/xfeedtest.h
+
+
+
 )
 
 target_link_libraries(XFeed_Test PRIVATE
