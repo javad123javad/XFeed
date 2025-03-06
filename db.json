@@ -1,0 +1,42 @@
+{
+    "Folders":["News","General","Hobby", "IT", "Science"],
+
+    "Channels": [
+        {
+            "type": "News",
+            "name": "BBC",
+            "url": "https://feeds.bbci.co.uk/persian/rss.xml",
+            "uuid": "11231"
+        },
+        {
+            "type": "News",
+            "name": "CNN",
+            "url": "http://rss.cnn.com/rss/money_topstories.rss",
+            "uuid": "11232"
+        },
+        {
+            "type": "General",
+            "name": "Discovery",
+            "url": "",
+            "uuid": "11233"
+        },
+        {
+            "type": "General",
+            "name": "National Geographic",
+            "url": "",
+            "uuid": "11234"
+        },
+        {
+            "type": "Hobby",
+            "name": "DIY Network",
+            "url": "",
+            "uuid": "11235"
+        },
+        {
+            "type": "Hobby",
+            "name": "Cooking Channel",
+            "url": "",
+            "uuid": "11236"
+        }
+    ]
+}
