@@ -94,6 +94,8 @@ qt_add_executable(XFeed_Test
     xfeedfolder.cpp xfeedfolder.h
     xfeedreader.cpp xfeedreader.h
     xfeedxmlreader.cpp xfeedxmlreader.h
+    xjsonadapter.h xjsonadapter.cpp
+
     tests/xfeedtest.cpp
     tests/xfeedtest.h
 
