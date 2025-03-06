@@ -4,6 +4,7 @@
 #include <QObject>
 #include "../channelinfo.h"
 #include "../xfeedxmlreader.h"
+#include "../xjsonadapter.h"
 class XFeedTest : public QObject
 {
     Q_OBJECT
@@ -17,9 +18,13 @@ private slots:
     void test_xfolder_folder_name();
     void test_xreader_addFolder();
     void test_xreader_folderList();
+    void test_xjsonadapter_readFile();
+    void test_xjsonadapter_readJSonDoc();
+    void test_xjsonadapter_createModelFromJson();
 private:
     ChannelInfo chInfo;
     XFeedXMLReader xfeedReader_;
+
 
 signals:
 };

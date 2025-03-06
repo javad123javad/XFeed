@@ -1,5 +1,6 @@
 #include "xfeedtest.h"
 #include <QTest>
+
 XFeedTest::XFeedTest(QObject *parent)
     : QObject{parent}
 {}
@@ -92,6 +93,55 @@ void XFeedTest::test_xreader_folderList()
     {
         QVERIFY(folder !=nullptr);
         qDebug()<<folder->folderName();
+    }
+}
+
+void XFeedTest::test_xjsonadapter_readFile()
+{
+    std::unique_ptr<XJSonAdapter> jsonAdapter_;
+    QVERIFY_THROWS_EXCEPTION(std::invalid_argument, jsonAdapter_ = std::make_unique<XJSonAdapter>(""));
+
+    std::unique_ptr<XJSonAdapter> jsonAdapter_not_empty_not_valid_;
+    QVERIFY_THROWS_EXCEPTION(std::logic_error,
+                             jsonAdapter_not_empty_not_valid_ = std::make_unique<XJSonAdapter>("/home/javad/workspace/qt_workspace/XMLFeedReader/invalid.json"));
+
+
+    std::unique_ptr<XJSonAdapter> jsonAdapter_not_empty_valid_;
+    QVERIFY_THROWS_NO_EXCEPTION(
+                             jsonAdapter_not_empty_valid_ = std::make_unique<XJSonAdapter>("/home/javad/workspace/qt_workspace/XMLFeedReader/db.json"));
+
+    // QVERIFY_THROWS_NO_EXCEPTION(jsonAdapter_not_empty_valid_.readJsonFile());
+
+    std::unique_ptr<XJSonAdapter> jsonAdapter_not_empty_valid_name_empty_;
+    QVERIFY_THROWS_EXCEPTION(std::logic_error,
+                             jsonAdapter_not_empty_valid_name_empty_ = std::make_unique<XJSonAdapter>("/home/javad/workspace/qt_workspace/XMLFeedReader/empty_db.json"));
+
+}
+
+void XFeedTest::test_xjsonadapter_readJSonDoc()
+{
+    try {
+        XJSonAdapter jsonAdapter_("/home/javad/workspace/qt_workspace/XMLFeedReader/db1.json");
+        jsonAdapter_.readJsonFile();
+        auto json_doc = jsonAdapter_.getJsonDoc();
+    } catch (std::logic_error e) {
+        qDebug()<<e.what();
+    }
+    catch(std::exception e)
+    {
+        qDebug()<<e.what();
+    }
+
+
+}
+
+void XFeedTest::test_xjsonadapter_createModelFromJson()
+{
+    try {
+        XJSonAdapter jsonAdapter_("/home/javad/workspace/qt_workspace/XMLFeedReader/db1.json");
+        jsonAdapter_.readJsonFile();
+        auto model = jsonAdapter_.createModelFromJson();
+    } catch (...) {
     }
 }
 
