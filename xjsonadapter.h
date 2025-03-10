@@ -14,10 +14,11 @@ public:
     explicit XJSonAdapter(const QString &file = "", QObject *parent = nullptr);
 private:
     void readJsonFile();
-    void exportToJson(const QString file = "");
 public:
-    std::unique_ptr<QStandardItemModel> createModelFromJson();
+    std::shared_ptr<QStandardItemModel> createModelFromJson();
     const QJsonDocument getJsonDoc() const;
+    void setDbFileName(const QString& dBFile);
+    void exportToJson(const QJsonDocument& jdoc);
 
 
 private:

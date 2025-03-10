@@ -5,10 +5,7 @@
 XJSonAdapter::XJSonAdapter(const QString &file, QObject *parent)
     : fileName_(file), QObject{parent}
 {
-    if(fileName_.isEmpty())
-        throw std::invalid_argument("Invalid File Name");
 
-    readJsonFile();
 }
 
 /**
@@ -18,8 +15,9 @@ XJSonAdapter::XJSonAdapter(const QString &file, QObject *parent)
 void XJSonAdapter::readJsonFile()
 {
 
-
+    qDebug()<<"Data reading finished!";
     dbFile_.setFileName(fileName_);
+
     if(!dbFile_.open(QIODevice::ReadOnly | QIODevice::Text))
         throw std::logic_error("Unable to open db File");
     QString strJson = dbFile_.readAll();
@@ -32,43 +30,53 @@ void XJSonAdapter::readJsonFile()
 
 }
 
-void XJSonAdapter::exportToJson(const QString file)
+void XJSonAdapter::exportToJson(const QJsonDocument& jdoc)
 {
+
+    QFile jfile(fileName_);
+    jfile.open(QIODevice::WriteOnly);
+    jfile.write(jdoc.toJson());
 
 }
 
-std::unique_ptr<QStandardItemModel> XJSonAdapter::createModelFromJson() {
-    auto itemModel = std::make_unique<QStandardItemModel>();
+std::shared_ptr<QStandardItemModel> XJSonAdapter::createModelFromJson() {
+    auto itemModel = std::make_shared<QStandardItemModel>();
+    readJsonFile();
+    qDebug()<<"Json is valid";
 
     if (jdoc_.isNull()) {
         throw std::logic_error("Invalid JSON Document");
     }
-
+    qDebug()<<"Json is valid";
     const QJsonObject root = jdoc_.object();
+    const QJsonArray folderArray = root["Folders"].toArray();
     const QJsonArray channelsArray = root["Channels"].toArray();
-
     // Use a map to group channels by type
     QMap<QString, QStandardItem*> folderMap;
+    // Fill map with folder items
+    for(const QJsonValue& folderValue:folderArray)
+    {
+        auto folderName = folderValue.toString();
+        if (!folderMap.contains(folderName)) {
+            auto folderItem = std::make_unique<QStandardItem>(folderName);
+            folderMap[folderName] = folderItem.get(); // Store raw pointer
+            itemModel->appendRow(folderItem.release()); // Transfer ownership to the model
+        }
+    }
+
 
     for (const QJsonValue& channelValue : channelsArray) {
         const QJsonObject channelObj = channelValue.toObject();
-        const QString type = channelObj["type"].toString(); // e.g., "News", "General"
+        const QString folderName = channelObj["folderName"].toString(); // e.g., "News", "General"
         const QString name = channelObj["name"].toString();
         const QString url = channelObj["url"].toString();
         const QString uuid = channelObj["uuid"].toString();
-
-        // Create or find the folder item
-        if (!folderMap.contains(type)) {
-            auto folderItem = std::make_unique<QStandardItem>(type);
-            folderMap[type] = folderItem.get(); // Store raw pointer
-            itemModel->appendRow(folderItem.release()); // Transfer ownership to the model
-        }
-
+        qDebug()<<"FolderName:"<<folderName;
         // Add the channel to the folder
         auto channelItem = std::make_unique<QStandardItem>(name);
         channelItem->setData(uuid, Qt::UserRole); // Store UUID
         channelItem->setData(url, Qt::UserRole); // Url
-        folderMap[type]->appendRow(channelItem.release()); // Transfer ownership to the model
+        folderMap[folderName]->appendRow(channelItem.release()); // Transfer ownership to the model
     }
 
     return std::move(itemModel);
@@ -77,4 +85,12 @@ std::unique_ptr<QStandardItemModel> XJSonAdapter::createModelFromJson() {
 const QJsonDocument XJSonAdapter::getJsonDoc() const
 {
     return jdoc_;
+}
+
+void XJSonAdapter::setDbFileName(const QString &dBFile)
+{
+    if(dBFile.isEmpty())
+        throw std::invalid_argument("Invalid File Name");
+
+    this->fileName_ = dBFile;
 }
