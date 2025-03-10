@@ -5,6 +5,8 @@
 #include <memory>
 #include "xfeedxmlreader.h"
 #include "xfeedfolder.h"
+#include "xfeedmodel.h"
+#include <QStandardItemModel>
 
 QT_BEGIN_NAMESPACE
 namespace Ui {
@@ -25,9 +27,12 @@ private:
     Ui::XFeed *ui;
     XFeedXMLReader xreader;
     folder_list_t feedFolders_;
+    std::shared_ptr<QStandardItemModel> model_;
+    XFeedModel xmodel_;
 
 private slots:
     void on_actionAdd_Channel_triggered();
     void on_actionAdd_Folder_triggered();
+    void on_xtree_clicked(const QModelIndex &index);
 };
 #endif // XFEED_H
