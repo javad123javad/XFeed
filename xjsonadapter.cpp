@@ -74,8 +74,8 @@ std::shared_ptr<QStandardItemModel> XJSonAdapter::createModelFromJson() {
         qDebug()<<"FolderName:"<<folderName;
         // Add the channel to the folder
         auto channelItem = std::make_unique<QStandardItem>(name);
-        channelItem->setData(uuid, Qt::UserRole); // Store UUID
-        channelItem->setData(url, Qt::UserRole); // Url
+        channelItem->setData(name, Qt::UserRole); // Name
+        channelItem->setData(url, Qt::UserRole + 1); // Store url
         folderMap[folderName]->appendRow(channelItem.release()); // Transfer ownership to the model
     }
 

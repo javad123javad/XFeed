@@ -11,6 +11,7 @@
 #include <QObject>
 #include "xjsonadapter.h"
 #include "XCommon.h"
+#include "channelinfo.h"
 
 class XFeedModel : public QObject
 {
@@ -20,10 +21,14 @@ public:
 
     xfeed_model_t getModelFromData(const QString& dbPath);
     void addFolder(const QString& folderName);
+    void addChannel(const ChannelInfo& channelInfo);
 
 private:
     XJSonAdapter jsonAdapter_;
     xfeed_model_t model_;
+    QStandardItem* findFolder(const QString& folderName) const;
+    void updateJsonDatabase(const ChannelInfo &channelInfo);
+
 
 signals:
 };

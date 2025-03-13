@@ -1,6 +1,8 @@
 #include "addchannel.h"
 #include "ui_addchannel.h"
 #include <QMessageBox>
+#include <QStandardItem>
+
 AddChannel::AddChannel(folder_list_t & folder_list, QWidget *parent)
     : QDialog(parent)
     , ui(new Ui::AddChannel)
@@ -23,6 +25,11 @@ AddChannel::~AddChannel()
 void AddChannel::setFolderList(const folder_list_t &newFolderList)
 {
     folderList_ = newFolderList;
+}
+
+void AddChannel::setChannelModel(QAbstractItemModel *model)
+{
+    ui->cmb_folder->setModel(model);
 }
 
  ChannelInfo AddChannel::getChInfo()
@@ -71,10 +78,6 @@ QString AddChannel::getChName() const
 
 void AddChannel::on_cmb_folder_activated(int index)
 {
-    qDebug()<<"Showing folder name";
-    for(auto& folder: folderList_)
-    {
-        qDebug()<<folder->folderName();
-    }
-}
 
+
+}

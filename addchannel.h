@@ -2,8 +2,11 @@
 #define ADDCHANNEL_H
 
 #include <QDialog>
+#include <QAbstractItemModel>
+
 #include "channelinfo.h"
 #include "xfeedfolder.h"
+#include <QStandardItemModel>
 namespace Ui {
 class AddChannel;
 }
@@ -21,6 +24,8 @@ public:
     ChannelInfo getChInfo() ;
 
     void setFolderList(const folder_list_t &newFolderList);
+    void setChannelModel(QAbstractItemModel* model);
+
 
 private slots:
     void on_cmb_folder_activated(int index);

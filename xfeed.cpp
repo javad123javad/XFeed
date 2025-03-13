@@ -31,9 +31,12 @@ void XFeed::on_actionAdd_Channel_triggered()
 
     AddChannel addCh(feedFolders_, this);
     addCh.setFolderList(feedFolders_);
+    addCh.setChannelModel(model_.get());
+
     if(addCh.exec())
     {
         ChannelInfo chInfo = addCh.getChInfo();
+        xmodel_.addChannel(chInfo);
         xreader.addChannel(chInfo);
     }
 

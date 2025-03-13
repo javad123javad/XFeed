@@ -1,7 +1,7 @@
 #ifndef CHANNELINFO_H
 #define CHANNELINFO_H
 #include <QObject>
-
+#include <QMap>
 struct ChannelInfo: public QObject
 {
     Q_OBJECT
@@ -13,6 +13,7 @@ public:
         chName_ = chInfo.chName_;
         chAddr_ = chInfo.chAddr_;
         chComment_ = chInfo.chComment_;
+        chFolder_ = chInfo.chFolder_;
     }
 
     ChannelInfo & operator=(const ChannelInfo & other)
@@ -22,6 +23,7 @@ public:
             this->setChAddr(other.chAddr_);
             this->setChName(other.chName_);
             this->setChComment(other.chComment_);
+            this->setChFolder(other.chFolder_);
         }
 
         return *this;
@@ -63,6 +65,8 @@ public:
     }
     QString chFolder() const;
     void setChFolder(const QString &newChFolder);
+    QJsonObject toJson() const;
+
 
 private:
     QString chName_;
