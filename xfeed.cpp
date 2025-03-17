@@ -14,6 +14,7 @@ XFeed::XFeed(QWidget *parent)
         model_ = xmodel_.getModelFromData("/home/javad/workspace/qt_workspace/XMLFeedReader/db.json");
 
         ui->xtree->setModel(model_.get());
+        // treeMenu.addMenu("Delete Channel");
     } catch (std::logic_error e) {
         qDebug()<<e.what();
     }
@@ -28,8 +29,8 @@ XFeed::~XFeed()
 
 void XFeed::on_actionAdd_Channel_triggered()
 {
-
-    AddChannel addCh(feedFolders_, this);
+    ChannelInfo chInfo;
+    AddChannel addCh(feedFolders_, chInfo, this);
     addCh.setFolderList(feedFolders_);
     addCh.setChannelModel(model_.get());
 
@@ -63,5 +64,47 @@ void XFeed::on_xtree_clicked(const QModelIndex &index)
     auto item = model_->itemFromIndex(index);
 
     qDebug()<<item->data(Qt::UserRole).toString();
+    qDebug()<<item->data(Qt::UserRole+1).toString();
+
+}
+
+
+void XFeed::on_xtree_customContextMenuRequested(const QPoint &pos)
+{
+    QModelIndex index = ui->xtree->indexAt(pos);
+    if(index.isValid())
+    {
+        if(index.parent().isValid())
+        {
+            QAction* act_edit = new QAction("Edit Channel", this);
+            connect(act_edit, &QAction::triggered, ui->xtree, [this, index]() { onAddChannel(index); });
+            treeMenu.addAction(act_edit);
+        }
+        else
+        {
+
+            qDebug()<<"Folder item";
+        }
+        treeMenu.exec(ui->xtree->viewport()->mapToGlobal(pos));
+        treeMenu.clear();
+    }
+}
+
+void XFeed::onAddChannel(QModelIndex idx)
+{
+    ChannelInfo chInfo;
+    qDebug()<<(model_->itemFromIndex(idx)->data().toString());
+    chInfo.setChName(model_->itemFromIndex(idx)->data(Qt::UserRole).toString());
+    chInfo.setChAddr(model_->itemFromIndex(idx)->data(Qt::UserRole + 1).toString());
+
+    AddChannel edit_channel(feedFolders_, chInfo, this);
+    edit_channel.setWindowTitle("Edit Channel");
+    edit_channel.setChannelModel(model_.get());
+
+    if(edit_channel.exec())
+    {
+
+        xmodel_.editChannel(idx, edit_channel.getChInfo());
+    }
 }
 

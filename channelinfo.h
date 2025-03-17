@@ -73,6 +73,7 @@ private:
     QString chAddr_;
     QString chComment_;
     QString chFolder_;
+
 };
 
 #endif // CHANNELINFO_H

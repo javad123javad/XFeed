@@ -16,7 +16,7 @@ class AddChannel : public QDialog
     Q_OBJECT
 
 public:
-    explicit AddChannel(folder_list_t & folder_list, QWidget *parent = nullptr);
+    explicit AddChannel(folder_list_t & folder_list, ChannelInfo& chInfo,QWidget *parent = nullptr);
     ~AddChannel();
 
     QString getChName() const;

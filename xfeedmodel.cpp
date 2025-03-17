@@ -53,6 +53,49 @@ void XFeedModel::addChannel(const ChannelInfo &channelInfo) {
     }
 }
 
+void XFeedModel::editChannel(const QModelIndex& idx, const ChannelInfo &channelInfo)
+{
+    if (!idx.isValid()) {
+        qWarning() << "Invalid index in editChannel";
+        return;
+    }
+
+    if (!model_) {
+        qWarning() << "Model is null in editChannel";
+        return;
+    }
+
+    QStandardItem* folderItem = findFolder(channelInfo.chFolder());
+    if (!folderItem) {
+        qWarning() << "Folder not found: " << channelInfo.chFolder();
+        return;
+    }
+
+    // QMap<int, QVariant> itemdata;
+    // itemdata.insert(Qt::UserRole, channelInfo.getChName());
+    // itemdata.insert(Qt::UserRole + 1, channelInfo.getChAddr());
+
+    // model_->setItemData(idx, itemdata);
+    qDebug() << "Before edit: Name =" << model_->data(idx, Qt::UserRole).toString();
+    qDebug() << "Before edit: Address =" << model_->data(idx, Qt::UserRole + 1).toString();
+
+    // model_->setData(idx, channelInfo.getChName(), Qt::UserRole);
+    // model_->setData(idx, channelInfo.getChAddr(), Qt::UserRole + 1);
+
+    QMap<int, QVariant> itemdata;
+    itemdata.insert(Qt::UserRole, channelInfo.getChName());
+    itemdata.insert(Qt::UserRole + 1, channelInfo.getChAddr());
+
+    bool success = model_->setItemData(idx, itemdata);
+    QStandardItem* item = model_->itemFromIndex(idx);
+    item->setText(channelInfo.getChName());  // Update the visible text!
+
+    emit model_->dataChanged(idx, idx, {Qt::DisplayRole, Qt::EditRole, Qt::UserRole, Qt::UserRole + 1});
+    editJsonDatabase(idx);
+
+}
+
+
 // Helper function to update JSON data
 void XFeedModel::updateJsonDatabase(const ChannelInfo &channelInfo) {
     auto jdoc = jsonAdapter_.getJsonDoc();
@@ -64,8 +107,34 @@ void XFeedModel::updateJsonDatabase(const ChannelInfo &channelInfo) {
     newChannel["name"] = channelInfo.getChName();
     newChannel["url"] = channelInfo.getChAddr();
 
-    channels.append(newChannel);
     root["Channels"] = channels;
+
+    jsonAdapter_.exportToJson(QJsonDocument(root));
+}
+
+void XFeedModel::editJsonDatabase(const QModelIndex& idx)
+{
+    auto jdoc = jsonAdapter_.getJsonDoc();
+    QJsonObject root = jdoc.object();
+    QJsonArray channelsArray = root["Channels"].toArray();
+    auto uuid = model_->data(idx, Qt::UserRole + 2).toString();
+    qDebug()<<uuid;
+
+
+    // Find and update the matching channel
+    bool updated = false;
+    for (int i = 0; i < channelsArray.size(); ++i) {
+        QJsonObject channel = channelsArray[i].toObject();
+        if (channel["uuid"].toString() == uuid) {
+            channel["name"] = model_->data(idx, Qt::UserRole ).toString();;
+            channel["url"] = model_->data(idx, Qt::UserRole + 1).toString();;
+            channelsArray[i] = channel; // Update the array
+            updated = true;
+            break;
+        }
+    }
+
+    root["Channels"] = channelsArray;
 
     jsonAdapter_.exportToJson(QJsonDocument(root));
 }

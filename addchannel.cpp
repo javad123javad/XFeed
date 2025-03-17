@@ -3,14 +3,21 @@
 #include <QMessageBox>
 #include <QStandardItem>
 
-AddChannel::AddChannel(folder_list_t & folder_list, QWidget *parent)
+AddChannel::AddChannel(folder_list_t & folder_list, ChannelInfo& chInfo, QWidget *parent)
     : QDialog(parent)
     , ui(new Ui::AddChannel)
     , folderList_(folder_list)
+    , chInfo_(chInfo)
 {
     ui->setupUi(this);
+
+    ui->lin_ch_url->setText(chInfo.getChAddr());
+    ui->lin_ch_name->setText(chInfo.getChName());
+    qDebug()<<"Add Channel:"<<chInfo.getChName();
+
     for(auto& folder: folderList_)
     {
+
         ui->cmb_folder->addItem(folder->folderName(), QVariant::fromValue(folder));
     }
 

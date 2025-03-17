@@ -10,6 +10,9 @@
     <height>273</height>
    </rect>
   </property>
+  <property name="contextMenuPolicy">
+   <enum>Qt::ContextMenuPolicy::DefaultContextMenu</enum>
+  </property>
   <property name="windowTitle">
    <string>Add Channel</string>
   </property>

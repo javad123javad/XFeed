@@ -31,11 +31,17 @@
           <height>0</height>
          </size>
         </property>
+        <property name="contextMenuPolicy">
+         <enum>Qt::ContextMenuPolicy::CustomContextMenu</enum>
+        </property>
         <property name="autoScroll">
          <bool>true</bool>
         </property>
         <property name="editTriggers">
-         <set>QAbstractItemView::EditTrigger::NoEditTriggers</set>
+         <set>QAbstractItemView::EditTrigger::CurrentChanged</set>
+        </property>
+        <property name="textElideMode">
+         <enum>Qt::TextElideMode::ElideNone</enum>
         </property>
        </widget>
       </item>
