@@ -16,16 +16,10 @@ class AddChannel : public QDialog
     Q_OBJECT
 
 public:
-    explicit AddChannel(folder_list_t & folder_list, ChannelInfo& chInfo,QWidget *parent = nullptr);
+    explicit AddChannel(QAbstractItemModel *model, ChannelInfo& chInfo,QWidget *parent = nullptr);
     ~AddChannel();
 
     QString getChName() const;
-
-    ChannelInfo getChInfo() ;
-
-    void setFolderList(const folder_list_t &newFolderList);
-    void setChannelModel(QAbstractItemModel* model);
-
 
 private slots:
     void on_cmb_folder_activated(int index);
@@ -33,11 +27,11 @@ private slots:
 private:
     Ui::AddChannel *ui;
     QString chName;
-    ChannelInfo chInfo_;
-    folder_list_t folderList_;
+    ChannelInfo& chInfo_;
 
 private: /* methods */
     bool validateChannelInfo();
+    void setCurrentFolder(const QString &folderName);
 protected:
      void accept() override; // Override the accept() method
 };

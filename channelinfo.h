@@ -2,11 +2,15 @@
 #define CHANNELINFO_H
 #include <QObject>
 #include <QMap>
+#include <QUuid>
+
 struct ChannelInfo: public QObject
 {
     Q_OBJECT
 public:
-    ChannelInfo(){};
+    ChannelInfo(){
+        chUUID_ = QUuid::createUuid();
+    };
     ~ChannelInfo() override{}
     ChannelInfo(ChannelInfo& chInfo)
     {
@@ -14,6 +18,7 @@ public:
         chAddr_ = chInfo.chAddr_;
         chComment_ = chInfo.chComment_;
         chFolder_ = chInfo.chFolder_;
+        chUUID_ = chInfo.chUUID_;
     }
 
     ChannelInfo & operator=(const ChannelInfo & other)
@@ -24,6 +29,7 @@ public:
             this->setChName(other.chName_);
             this->setChComment(other.chComment_);
             this->setChFolder(other.chFolder_);
+            this->setChUUID(other.chUUID_);
         }
 
         return *this;
@@ -68,11 +74,15 @@ public:
     QJsonObject toJson() const;
 
 
+    QUuid chUUID() const;
+    void setChUUID(const QUuid &newChUUID);
+
 private:
     QString chName_;
     QString chAddr_;
     QString chComment_;
     QString chFolder_;
+    QUuid chUUID_;
 
 };
 

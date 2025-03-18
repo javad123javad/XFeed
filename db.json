@@ -1,42 +1,111 @@
 {
-    "Folders":["News","General","Hobby", "IT", "Science"],
-
     "Channels": [
         {
-            "type": "News",
+            "folderName": "News",
             "name": "BBC",
             "url": "https://feeds.bbci.co.uk/persian/rss.xml",
             "uuid": "11231"
         },
         {
-            "type": "News",
+            "folderName": "News",
             "name": "CNN",
             "url": "http://rss.cnn.com/rss/money_topstories.rss",
             "uuid": "11232"
         },
         {
-            "type": "General",
+            "folderName": "General",
             "name": "Discovery",
-            "url": "",
+            "url": "www.discovery.com",
             "uuid": "11233"
         },
         {
-            "type": "General",
+            "folderName": "General",
             "name": "National Geographic",
-            "url": "",
+            "url": "www.nationalgeo.com",
             "uuid": "11234"
         },
         {
-            "type": "Hobby",
+            "folderName": "Hobby",
             "name": "DIY Network",
-            "url": "",
+            "url": "www.duy.com",
             "uuid": "11235"
         },
         {
-            "type": "Hobby",
+            "folderName": "Hobby",
             "name": "Cooking Channel",
-            "url": "",
+            "url": "www.cooking.com",
             "uuid": "11236"
+        },
+        {
+            "folderName": "News",
+            "name": "TestC",
+            "url": "www.test.com/feed/rss.xml",
+            "uuid": "11237"
+        },
+        {
+            "folderName": "Linux",
+            "name": "Distrowatch",
+            "url": "https://distrowatch.com/news/dw.xml",
+            "uuid": "11238"
+        },
+        {
+            "folderName": "News",
+            "name": "TestChannel",
+            "url": "www.test.com/feed/rss.xml",
+            "uuid": "11239"
+        },
+        {
+            "folderName": "News",
+            "name": "Test69",
+            "url": "www.test.com/feed/rss.xml",
+            "uuid": "11240"
+        },
+        {
+            "folderName": "Test2",
+            "name": "Test22",
+            "url": "www.test22.com",
+            "uuid": "{00000000-0000-0000-0000-000000000000}"
+        },
+        {
+            "folderName": "Test2",
+            "name": "Test236",
+            "url": "www.test23.com",
+            "uuid": "{b2a5450a-0c4a-40b3-a06c-308325964007}"
+        },
+        {
+            "folderName": "Test3",
+            "name": "Test33",
+            "url": "www.test33.com/feed.xml",
+            "uuid": "{9d559199-f682-4e76-83c9-9380f5f6bb7f}"
+        },
+        {
+            "folderName": "Test3",
+            "name": "Test33",
+            "url": "www.test33.com",
+            "uuid": "{bb8374fb-41d4-44de-8960-cce45f80192d}"
+        },
+        {
+            "folderName": "Test3",
+            "name": "Test434",
+            "url": "www.test.com",
+            "uuid": "{dc4ad1f8-d353-470e-b042-28f304cf504b}"
+        },
+        {
+            "folderName": "Test3",
+            "name": "test5",
+            "url": "www.test5.com",
+            "uuid": "{a5641381-8659-439a-b438-e4c1ae9888a3}"
         }
+    ],
+    "Folders": [
+        "News",
+        "General",
+        "Hobby",
+        "IT",
+        "Science",
+        "Linux",
+        "Test",
+        "Test2",
+        "Test3"
     ]
 }

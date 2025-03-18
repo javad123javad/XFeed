@@ -36,18 +36,17 @@ void XJSonAdapter::exportToJson(const QJsonDocument& jdoc)
     QFile jfile(fileName_);
     jfile.open(QIODevice::WriteOnly);
     jfile.write(jdoc.toJson());
+    jfile.close();
 
 }
 
 std::shared_ptr<QStandardItemModel> XJSonAdapter::createModelFromJson() {
     auto itemModel = std::make_shared<QStandardItemModel>();
     readJsonFile();
-    qDebug()<<"Json is valid";
 
     if (jdoc_.isNull()) {
         throw std::logic_error("Invalid JSON Document");
     }
-    qDebug()<<"Json is valid";
     const QJsonObject root = jdoc_.object();
     const QJsonArray folderArray = root["Folders"].toArray();
     const QJsonArray channelsArray = root["Channels"].toArray();
@@ -64,20 +63,22 @@ std::shared_ptr<QStandardItemModel> XJSonAdapter::createModelFromJson() {
         }
     }
 
-
     for (const QJsonValue& channelValue : channelsArray) {
         const QJsonObject channelObj = channelValue.toObject();
-        const QString folderName = channelObj["folderName"].toString(); // e.g., "News", "General"
-        const QString name = channelObj["name"].toString();
-        const QString url = channelObj["url"].toString();
-        const QString uuid = channelObj["uuid"].toString();
-        qDebug()<<"FolderName:"<<folderName;
+        const QString folderName = channelObj["folderName"].toString();
+
         // Add the channel to the folder
-        auto channelItem = std::make_unique<QStandardItem>(name);
-        channelItem->setData(name, Qt::UserRole); // Name
-        channelItem->setData(url, Qt::UserRole + 1); // Store url
-        channelItem->setData(uuid, Qt::UserRole + 2); // Store uuid
+        auto channelItem = std::make_unique<QStandardItem>(channelObj["name"].toString());
+
+        channelItem->setData(channelObj["name"].toString(), Qt::UserRole); // Name
+        channelItem->setData(channelObj["url"].toString(), Qt::UserRole + 1); // Store url
+        channelItem->setData(channelObj["uuid"].toString(), Qt::UserRole + 2); // Store uuid
+        channelItem->setData(channelObj["folderName"].toString(), Qt::UserRole + 3);
+
+
         folderMap[folderName]->appendRow(channelItem.release()); // Transfer ownership to the model
+
+
     }
 
     return std::move(itemModel);

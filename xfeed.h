@@ -35,9 +35,8 @@ private:
 private slots:
     void on_actionAdd_Channel_triggered();
     void on_actionAdd_Folder_triggered();
-    void on_xtree_clicked(const QModelIndex &index);
     void on_xtree_customContextMenuRequested(const QPoint &pos);
-    void onAddChannel(QModelIndex);
+    void onEditChannel(QModelIndex);
 
 };
 #endif // XFEED_H

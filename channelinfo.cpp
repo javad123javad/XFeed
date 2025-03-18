@@ -23,3 +23,13 @@ QJsonObject ChannelInfo::toJson() const {
     }
     return json;
 }
+
+QUuid ChannelInfo::chUUID() const
+{
+    return chUUID_;
+}
+
+void ChannelInfo::setChUUID(const QUuid &newChUUID)
+{
+    chUUID_ = newChUUID;
+}

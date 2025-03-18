@@ -3,24 +3,18 @@
 #include <QMessageBox>
 #include <QStandardItem>
 
-AddChannel::AddChannel(folder_list_t & folder_list, ChannelInfo& chInfo, QWidget *parent)
+AddChannel::AddChannel(QAbstractItemModel *model, ChannelInfo& chInfo, QWidget *parent)
     : QDialog(parent)
     , ui(new Ui::AddChannel)
-    , folderList_(folder_list)
     , chInfo_(chInfo)
 {
     ui->setupUi(this);
 
     ui->lin_ch_url->setText(chInfo.getChAddr());
     ui->lin_ch_name->setText(chInfo.getChName());
-    qDebug()<<"Add Channel:"<<chInfo.getChName();
-
-    for(auto& folder: folderList_)
-    {
-
-        ui->cmb_folder->addItem(folder->folderName(), QVariant::fromValue(folder));
-    }
-
+    ui->cmb_folder->setModel(model);
+    qDebug()<<"Folder Name:"<<chInfo.chFolder();
+    setCurrentFolder(chInfo.chFolder());
 }
 
 AddChannel::~AddChannel()
@@ -28,21 +22,6 @@ AddChannel::~AddChannel()
     delete ui;
 }
 
-
-void AddChannel::setFolderList(const folder_list_t &newFolderList)
-{
-    folderList_ = newFolderList;
-}
-
-void AddChannel::setChannelModel(QAbstractItemModel *model)
-{
-    ui->cmb_folder->setModel(model);
-}
-
- ChannelInfo AddChannel::getChInfo()
-{
-    return chInfo_;
-}
 
 bool AddChannel::validateChannelInfo()
 {
@@ -58,6 +37,34 @@ bool AddChannel::validateChannelInfo()
     return is_valid;
 
 }
+
+void AddChannel::setCurrentFolder(const QString &folderName)
+{
+    auto model = ui->cmb_folder->model();
+    if (!model || folderName.isEmpty()) {
+        qWarning() << "QComboBox model is null! or no folder name specifyed.";
+        return;
+    }
+
+    qDebug() << "Searching for folder:" << folderName;
+
+    // Loop through the model to find the matching folder name
+    for (int i = 0; i < model->rowCount(); ++i) {
+        QModelIndex index = model->index(i, 0); // Assuming folder names are in column 0
+        QString itemText = model->data(index, Qt::DisplayRole).toString().trimmed();
+
+        qDebug() << "Checking item [" << i << "]:" << itemText;
+
+        if (itemText.compare(folderName.trimmed(), Qt::CaseInsensitive) == 0) {
+            ui->cmb_folder->setCurrentIndex(i);  // Set the matching index
+            qDebug() << "Set current folder to:" << folderName << "at index:" << i;
+            return;
+        }
+    }
+
+    qDebug() << "Oops, no such folder name found in model!";
+}
+
 
 void AddChannel::accept()
 {
