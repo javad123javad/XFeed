@@ -94,6 +94,29 @@ void XFeedModel::editChannel(const QModelIndex& idx, const ChannelInfo &channelI
     }
 }
 
+void XFeedModel::deleteChannel(const QModelIndex &indx)
+{
+    if(!indx.isValid())
+    {
+        throw std::invalid_argument("Invalid item idnex");
+    }
+
+    if(!model_)
+    {
+        throw std::invalid_argument("Invalid Model: model_");
+    }
+
+    // QStandardItem* folderItem = findFolder(channelInfo.chFolder());
+    // if (!folderItem) {
+    //     qWarning() << "Folder not found: " << channelInfo.chFolder();
+    //     return;
+    // }
+    // model_->removeRows(indx.row(),1);
+    deleteItemFromJsonDatabase(indx);
+    model_->removeRows(indx.row(),1, indx.parent());
+
+}
+
 
 // Helper function to update JSON data
 void XFeedModel::updateJsonDatabase(const ChannelInfo &channelInfo) {
@@ -121,7 +144,6 @@ void XFeedModel::editJsonDatabase(const QModelIndex& idx)
     QJsonArray channelsArray = root["Channels"].toArray();
 
     auto uuid = model_->data(idx, Qt::UserRole + 2).toString();
-    qDebug()<<"editJsonDatabase::"<<uuid;
 
 
     // Find and update the matching channel
@@ -146,5 +168,25 @@ void XFeedModel::editJsonDatabase(const QModelIndex& idx)
     {
         qErrnoWarning("Ops, item not found!");
     }
+}
+
+void XFeedModel::deleteItemFromJsonDatabase(const QModelIndex &idx)
+{
+    auto jdoc = jsonAdapter_.getJsonDoc();
+    QJsonObject root = jdoc.object();
+    QJsonArray channelsArray = root["Channels"].toArray();
+
+    auto uuid = model_->data(idx, Qt::UserRole + 2).toString();
+    for(auto it = channelsArray.begin(); it != channelsArray.end(); ++it)
+    {
+        QJsonObject ch = it->toObject();
+        if((ch["uuid"].toString() == uuid))
+        {
+            channelsArray.erase(it);
+            break;
+        }
+    }
+    root["Channels"] = channelsArray;
+    jsonAdapter_.exportToJson(QJsonDocument(root));
 }
 

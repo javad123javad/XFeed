@@ -14,7 +14,6 @@ XFeed::XFeed(QWidget *parent)
         model_ = xmodel_.getModelFromData("/home/javad/workspace/QtWorkspace/XFeed/db.json");
 
         ui->xtree->setModel(model_.get());
-        // treeMenu.addMenu("Delete Channel");
     } catch (std::logic_error e) {
         qDebug()<<e.what();
     }
@@ -61,8 +60,13 @@ void XFeed::on_xtree_customContextMenuRequested(const QPoint &pos)
         if(index.parent().isValid())
         {
             QAction* act_edit = new QAction("Edit Channel", this);
-            connect(act_edit, &QAction::triggered, ui->xtree, [this, index]() { onEditChannel(index); });
+            connect(act_edit, &QAction::triggered, this, [this, index]() { onEditChannel(index); });
             treeMenu.addAction(act_edit);
+            /** Delete Channel **/
+
+            QAction *act_del = new QAction("Delete Channel");
+            connect(act_del, &QAction::triggered, this, [this, index](){onDeleteChannel(index);});
+            treeMenu.addAction(act_del);
         }
 
         treeMenu.exec(ui->xtree->viewport()->mapToGlobal(pos));
@@ -86,5 +90,14 @@ void XFeed::onEditChannel(QModelIndex idx)
 
         xmodel_.editChannel(idx, chInfo);
     }
+}
+
+void XFeed::onDeleteChannel(QModelIndex indx)
+{
+    /* Ask model to delete corresponding channel */
+    qDebug()<<"Delete Action triggered!";
+    // model_->removeRows(indx.row(),1, indx.parent());
+    xmodel_.deleteChannel(indx);
+
 }
 

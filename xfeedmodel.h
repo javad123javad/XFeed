@@ -23,6 +23,7 @@ public:
     void addFolder(const QString& folderName);
     void addChannel(const ChannelInfo& channelInfo);
     void editChannel(const QModelIndex& idx, const ChannelInfo &channelInfo);
+    void deleteChannel(const QModelIndex& inx);
 
 private:
     XJSonAdapter jsonAdapter_;
@@ -30,6 +31,7 @@ private:
     QStandardItem* findFolder(const QString& folderName) const;
     void updateJsonDatabase(const ChannelInfo &channelInfo);
     void editJsonDatabase(const QModelIndex& idx);
+    void deleteItemFromJsonDatabase(const QModelIndex& idx);
 
 
 signals:
