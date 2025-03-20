@@ -38,6 +38,7 @@ private slots:
     void on_xtree_customContextMenuRequested(const QPoint &pos);
     void onEditChannel(QModelIndex);
     void onDeleteChannel(QModelIndex);
+    void onDeleteFolder(QModelIndex&indx);
 
 };
 #endif // XFEED_H

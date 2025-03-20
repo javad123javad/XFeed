@@ -58,6 +58,7 @@ std::shared_ptr<QStandardItemModel> XJSonAdapter::createModelFromJson() {
         auto folderName = folderValue.toString();
         if (!folderMap.contains(folderName)) {
             auto folderItem = std::make_unique<QStandardItem>(folderName);
+            folderItem->setData(folderName);
             folderMap[folderName] = folderItem.get(); // Store raw pointer
             itemModel->appendRow(folderItem.release()); // Transfer ownership to the model
         }

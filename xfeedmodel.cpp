@@ -117,6 +117,39 @@ void XFeedModel::deleteChannel(const QModelIndex &indx)
 
 }
 
+void XFeedModel::deleteFolder(const QModelIndex &index)
+{
+    jsonAdapter_.createModelFromJson();
+    auto jdoc = jsonAdapter_.getJsonDoc();
+    QJsonObject root = jdoc.object();
+    QJsonArray channels = root["Channels"].toArray();
+
+    QString folderName = model_->data(index,Qt::UserRole + 1).toString();
+    qDebug()<<"Target folder to delete:"<<folderName;
+    //First delete all channels in this folder
+    for (int i = channels.size() - 1; i >= 0; --i) {
+        if (channels[i].toObject()["folderName"].toString() == folderName) {
+            channels.removeAt(i);  // Safe removal in reverse order
+        }
+    }
+
+    root["Channels"] = channels;
+
+    // Now delete the forlder itself
+    QJsonArray folders = root["Folders"].toArray();
+    for(auto it = folders.begin(); it != folders.end(); ++ it)
+    {
+        if(it->toString() == folderName)
+        {
+            folders.erase(it);
+            break;
+        }
+    }
+    root["Folders"] = folders;
+    jsonAdapter_.exportToJson(QJsonDocument(root));
+    model_->removeRows(index.row(),1);
+}
+
 
 // Helper function to update JSON data
 void XFeedModel::updateJsonDatabase(const ChannelInfo &channelInfo) {

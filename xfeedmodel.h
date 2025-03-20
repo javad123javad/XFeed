@@ -24,6 +24,7 @@ public:
     void addChannel(const ChannelInfo& channelInfo);
     void editChannel(const QModelIndex& idx, const ChannelInfo &channelInfo);
     void deleteChannel(const QModelIndex& inx);
+    void deleteFolder(const QModelIndex& index);
 
 private:
     XJSonAdapter jsonAdapter_;

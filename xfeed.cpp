@@ -64,8 +64,14 @@ void XFeed::on_xtree_customContextMenuRequested(const QPoint &pos)
             treeMenu.addAction(act_edit);
             /** Delete Channel **/
 
-            QAction *act_del = new QAction("Delete Channel");
+            QAction *act_del = new QAction("Delete Channel", this);
             connect(act_del, &QAction::triggered, this, [this, index](){onDeleteChannel(index);});
+            treeMenu.addAction(act_del);
+        }
+        else
+        {
+            QAction *act_del = new QAction("Delete Folder", this);
+            connect(act_del, &QAction::triggered, this, [this, &index](){onDeleteFolder(index);});
             treeMenu.addAction(act_del);
         }
 
@@ -99,5 +105,10 @@ void XFeed::onDeleteChannel(QModelIndex indx)
     // model_->removeRows(indx.row(),1, indx.parent());
     xmodel_.deleteChannel(indx);
 
+}
+
+void XFeed::onDeleteFolder(QModelIndex& indx)
+{
+    xmodel_.deleteFolder(indx);
 }
 
