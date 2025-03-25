@@ -63,38 +63,8 @@
         {
             "folderName": "Test2",
             "name": "Test22",
-            "url": "www.test22.com",
+            "url": "https://likeradiostream.com/likepop",
             "uuid": "{00000000-0000-0000-0000-000000000000}"
-        },
-        {
-            "folderName": "Test2",
-            "name": "Test236",
-            "url": "www.test23.com",
-            "uuid": "{b2a5450a-0c4a-40b3-a06c-308325964007}"
-        },
-        {
-            "folderName": "Test3",
-            "name": "Test33",
-            "url": "www.test33.com/feed.xml",
-            "uuid": "{9d559199-f682-4e76-83c9-9380f5f6bb7f}"
-        },
-        {
-            "folderName": "Test3",
-            "name": "Test33",
-            "url": "www.test33.com",
-            "uuid": "{bb8374fb-41d4-44de-8960-cce45f80192d}"
-        },
-        {
-            "folderName": "Test3",
-            "name": "Test434",
-            "url": "www.test.com",
-            "uuid": "{dc4ad1f8-d353-470e-b042-28f304cf504b}"
-        },
-        {
-            "folderName": "Test3",
-            "name": "test5",
-            "url": "www.test5.com",
-            "uuid": "{a5641381-8659-439a-b438-e4c1ae9888a3}"
         }
     ],
     "Folders": [
@@ -105,7 +75,6 @@
         "Science",
         "Linux",
         "Test",
-        "Test2",
-        "Test3"
+        "Test2"
     ]
 }

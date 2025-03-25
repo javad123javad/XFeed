@@ -2,8 +2,7 @@
 #define XFEEDREADER_H
 
 #include <QObject>
-#include "xfeedch.h"
-#include "channelinfo.h"
+#include <QIODevice>
 class XFeedReader: public QObject
 {
     Q_OBJECT
@@ -11,8 +10,7 @@ public:
     XFeedReader() = default;
     virtual ~XFeedReader() = default;
 
-    virtual void addChannel(ChannelInfo& xfeedCh) = 0;
-    virtual void readFeed() = 0;
+    virtual void readFeed(QIODevice* feed_data) = 0;
 
 };
 

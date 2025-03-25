@@ -13,6 +13,7 @@
 #include "XCommon.h"
 #include "channelinfo.h"
 #include <QModelIndex>
+#include <QtNetwork/QNetworkAccessManager>
 class XFeedModel : public QObject
 {
     Q_OBJECT
@@ -25,15 +26,20 @@ public:
     void editChannel(const QModelIndex& idx, const ChannelInfo &channelInfo);
     void deleteChannel(const QModelIndex& inx);
     void deleteFolder(const QModelIndex& index);
+    /*********************/
+    void fetchChannel(const QModelIndex &index);
 
 private:
     XJSonAdapter jsonAdapter_;
     xfeed_model_t model_;
     QStandardItem* findFolder(const QString& folderName) const;
+    QNetworkAccessManager *net_manager;
     void updateJsonDatabase(const ChannelInfo &channelInfo);
     void editJsonDatabase(const QModelIndex& idx);
     void deleteItemFromJsonDatabase(const QModelIndex& idx);
 
+private slots:
+    void net_opr_finished(QNetworkReply* netReply);
 
 signals:
 };

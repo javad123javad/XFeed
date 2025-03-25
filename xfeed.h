@@ -40,5 +40,6 @@ private slots:
     void onDeleteChannel(QModelIndex);
     void onDeleteFolder(QModelIndex&indx);
 
+    void on_xtree_doubleClicked(const QModelIndex &index);
 };
 #endif // XFEED_H

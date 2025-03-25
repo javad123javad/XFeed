@@ -1,9 +1,17 @@
 #include "xfeedmodel.h"
 #include <QJsonObject>
 #include <QJsonArray>
+#include <QNetworkReply>
+#include <QMediaPlayer>
+#include <QAudioOutput>
+#include <QXmlStreamReader>
+
 XFeedModel::XFeedModel(QObject *parent)
     : QObject{parent}
-{}
+{
+    net_manager = new QNetworkAccessManager(this);
+    connect(net_manager, &QNetworkAccessManager::finished, this, &XFeedModel::net_opr_finished);
+}
 
 /**
  * @brief XFeedModel::getModelFromData Fetch data from file and return it as a standard model
@@ -106,12 +114,6 @@ void XFeedModel::deleteChannel(const QModelIndex &indx)
         throw std::invalid_argument("Invalid Model: model_");
     }
 
-    // QStandardItem* folderItem = findFolder(channelInfo.chFolder());
-    // if (!folderItem) {
-    //     qWarning() << "Folder not found: " << channelInfo.chFolder();
-    //     return;
-    // }
-    // model_->removeRows(indx.row(),1);
     deleteItemFromJsonDatabase(indx);
     model_->removeRows(indx.row(),1, indx.parent());
 
@@ -148,6 +150,22 @@ void XFeedModel::deleteFolder(const QModelIndex &index)
     root["Folders"] = folders;
     jsonAdapter_.exportToJson(QJsonDocument(root));
     model_->removeRows(index.row(),1);
+}
+
+void XFeedModel::fetchChannel(const QModelIndex &index)
+{
+    QString url = model_->data(index, Qt::UserRole+1).toString();
+    qDebug()<<url;
+    net_manager->get(QNetworkRequest(QUrl(url)));
+    // QMediaPlayer *player = new QMediaPlayer(this);
+    // QAudioOutput *audioOutput = new QAudioOutput(this);
+    // player->setAudioOutput(audioOutput);
+    // // connect(player, &QMediaPlayer::positionChanged, this, &MediaExample::positionChanged);
+    // player->setSource(QUrl("http://stream.radioparadise.com/mp3-192"));
+    // audioOutput->setVolume(50);
+    // player->play();
+
+
 }
 
 
@@ -221,5 +239,51 @@ void XFeedModel::deleteItemFromJsonDatabase(const QModelIndex &idx)
     }
     root["Channels"] = channelsArray;
     jsonAdapter_.exportToJson(QJsonDocument(root));
+}
+
+void XFeedModel::net_opr_finished(QNetworkReply* netReply)
+{
+    // char buf[1024]  ={0};
+    // while(netReply->read(buf, 1024)!=-1)
+    // {
+    //     qDebug()<<buf;
+    // }
+    QXmlStreamReader xml(netReply);
+    while(!xml.atEnd())
+    {
+        QXmlStreamReader::TokenType token = xml.readNext();
+
+        // If token is StartElement, process the tag
+        if (token == QXmlStreamReader::StartElement) {
+            // Check for RSS item
+            if (xml.name() == "item") {
+                qDebug() << "Found new item:";
+
+                // Read until we get to the end of this item
+                while (!(xml.tokenType() == QXmlStreamReader::EndElement &&
+                         xml.name() == "item")) {
+                    xml.readNext();
+
+                    if (xml.tokenType() == QXmlStreamReader::StartElement) {
+                        QStringView currentTag = xml.name();
+
+                        if (currentTag == "title") {
+                            qDebug() << "Title:" << xml.readElementText();
+                        }
+                        else if (currentTag == "link") {
+                            qDebug() << "Link:" << xml.readElementText();
+                        }
+                        else if (currentTag == "description") {
+                            qDebug() << "Description:" << xml.readElementText();
+                        }
+                        else if (currentTag == "pubDate") {
+                            qDebug() << "Published:" << xml.readElementText();
+                        }
+                    }
+                }
+            }
+        }
+    }
+
 }
 

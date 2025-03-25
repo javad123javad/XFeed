@@ -11,7 +11,7 @@ XFeed::XFeed(QWidget *parent)
     try {
 
         // XJSonAdapter jsonAdapter_();
-        model_ = xmodel_.getModelFromData("/home/javad/workspace/QtWorkspace/XFeed/db.json");
+        model_ = xmodel_.getModelFromData("/home/javad/workspace/qt_workspace/XMLFeedReader/db.json");
 
         ui->xtree->setModel(model_.get());
     } catch (std::logic_error e) {
@@ -110,5 +110,12 @@ void XFeed::onDeleteChannel(QModelIndex indx)
 void XFeed::onDeleteFolder(QModelIndex& indx)
 {
     xmodel_.deleteFolder(indx);
+}
+
+
+void XFeed::on_xtree_doubleClicked(const QModelIndex &index)
+{
+    qDebug()<<"Fetch data from here!";
+    xmodel_.fetchChannel(index);
 }
 

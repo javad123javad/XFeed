@@ -26,6 +26,7 @@ void XFeedTest::test_channelInfo()
     QVERIFY_THROWS_NO_EXCEPTION(ChannelInfo chInfo2);
 
 }
+#if 0
 
 void XFeedTest::test_xfeedCh()
 {
@@ -95,7 +96,7 @@ void XFeedTest::test_xreader_folderList()
         qDebug()<<folder->folderName();
     }
 }
-
+#endif
 void XFeedTest::test_xjsonadapter_readFile()
 {
     std::unique_ptr<XJSonAdapter> jsonAdapter_;

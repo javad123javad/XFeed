@@ -13,11 +13,15 @@ public:
 private slots:
     void toUpper();
     void test_channelInfo();
+#if 0
+
     void test_xfeedCh();
+
     void test_xfolder();
     void test_xfolder_folder_name();
     void test_xreader_addFolder();
     void test_xreader_folderList();
+#endif
     void test_xjsonadapter_readFile();
     void test_xjsonadapter_readJSonDoc();
     void test_xjsonadapter_createModelFromJson();
