@@ -248,42 +248,10 @@ void XFeedModel::net_opr_finished(QNetworkReply* netReply)
     // {
     //     qDebug()<<buf;
     // }
-    QXmlStreamReader xml(netReply);
-    while(!xml.atEnd())
-    {
-        QXmlStreamReader::TokenType token = xml.readNext();
+    // QXmlStreamReader xml(netReply);
+    xmlReader.parseFeed(netReply, feedDataModel_);
+    emit feed_data_ready(feedDataModel_);
 
-        // If token is StartElement, process the tag
-        if (token == QXmlStreamReader::StartElement) {
-            // Check for RSS item
-            if (xml.name() == "item") {
-                qDebug() << "Found new item:";
-
-                // Read until we get to the end of this item
-                while (!(xml.tokenType() == QXmlStreamReader::EndElement &&
-                         xml.name() == "item")) {
-                    xml.readNext();
-
-                    if (xml.tokenType() == QXmlStreamReader::StartElement) {
-                        QStringView currentTag = xml.name();
-
-                        if (currentTag == "title") {
-                            qDebug() << "Title:" << xml.readElementText();
-                        }
-                        else if (currentTag == "link") {
-                            qDebug() << "Link:" << xml.readElementText();
-                        }
-                        else if (currentTag == "description") {
-                            qDebug() << "Description:" << xml.readElementText();
-                        }
-                        else if (currentTag == "pubDate") {
-                            qDebug() << "Published:" << xml.readElementText();
-                        }
-                    }
-                }
-            }
-        }
-    }
 
 }
 

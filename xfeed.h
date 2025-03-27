@@ -8,7 +8,7 @@
 #include "xfeedmodel.h"
 #include <QStandardItemModel>
 #include <QMenu>
-
+#include <QTextBrowser>
 QT_BEGIN_NAMESPACE
 namespace Ui {
 class XFeed;
@@ -31,6 +31,7 @@ private:
     std::shared_ptr<QStandardItemModel> model_;
     XFeedModel xmodel_;
     QMenu treeMenu;
+    void fetchAndSetImage(QString imageUrl, QTextBrowser* textBrowser);
 
 private slots:
     void on_actionAdd_Channel_triggered();
@@ -41,5 +42,8 @@ private slots:
     void onDeleteFolder(QModelIndex&indx);
 
     void on_xtree_doubleClicked(const QModelIndex &index);
+    void on_feed_data_ready(QStandardItemModel& data);
+    void on_tableView_clicked(const QModelIndex &index);
+    void on_tableView_doubleClicked(const QModelIndex &index);
 };
 #endif // XFEED_H

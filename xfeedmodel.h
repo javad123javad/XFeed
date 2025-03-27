@@ -12,6 +12,7 @@
 #include "xjsonadapter.h"
 #include "XCommon.h"
 #include "channelinfo.h"
+#include "xfeedxmlreader.h"
 #include <QModelIndex>
 #include <QtNetwork/QNetworkAccessManager>
 class XFeedModel : public QObject
@@ -34,6 +35,8 @@ private:
     xfeed_model_t model_;
     QStandardItem* findFolder(const QString& folderName) const;
     QNetworkAccessManager *net_manager;
+    XFeedXMLReader xmlReader;
+    QStandardItemModel feedDataModel_;
     void updateJsonDatabase(const ChannelInfo &channelInfo);
     void editJsonDatabase(const QModelIndex& idx);
     void deleteItemFromJsonDatabase(const QModelIndex& idx);
@@ -42,6 +45,7 @@ private slots:
     void net_opr_finished(QNetworkReply* netReply);
 
 signals:
+    void feed_data_ready(QStandardItemModel&);
 };
 
 #endif // XFEEDMODEL_H

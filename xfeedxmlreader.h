@@ -5,14 +5,14 @@
 #include <memory.h>
 #include <QXmlStreamReader>
 #include <QIODevice>
-
+#include <QStandardItemModel>
 class XFeedXMLReader : public XFeedReader
 {
 public:
     XFeedXMLReader();
     virtual ~XFeedXMLReader() = default;
 
-    void readFeed(QIODevice* feed_data)  override;
+    void parseFeed(QIODevice* feed_data, QStandardItemModel& feedDataModel)  override;
 
 
 private:

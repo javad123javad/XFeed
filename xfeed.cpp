@@ -3,6 +3,8 @@
 #include "addchannel.h"
 #include "addfolder.h"
 #include "xjsonadapter.h"
+#include <QMessageBox>
+#include <QDesktopServices>
 XFeed::XFeed(QWidget *parent)
     : QMainWindow(parent)
     , ui(new Ui::XFeed)
@@ -11,10 +13,12 @@ XFeed::XFeed(QWidget *parent)
     try {
 
         // XJSonAdapter jsonAdapter_();
-        model_ = xmodel_.getModelFromData("/home/javad/workspace/qt_workspace/XMLFeedReader/db.json");
+        model_ = xmodel_.getModelFromData("/home/javad/workspace/QtWorkspace/XFeed/db.json");
 
         ui->xtree->setModel(model_.get());
+        connect(&xmodel_, &XFeedModel::feed_data_ready, this, &XFeed::on_feed_data_ready);
     } catch (std::logic_error e) {
+        QMessageBox::critical(this,"Database error",e.what());
         qDebug()<<e.what();
     }
 }
@@ -100,11 +104,7 @@ void XFeed::onEditChannel(QModelIndex idx)
 
 void XFeed::onDeleteChannel(QModelIndex indx)
 {
-    /* Ask model to delete corresponding channel */
-    qDebug()<<"Delete Action triggered!";
-    // model_->removeRows(indx.row(),1, indx.parent());
     xmodel_.deleteChannel(indx);
-
 }
 
 void XFeed::onDeleteFolder(QModelIndex& indx)
@@ -115,7 +115,60 @@ void XFeed::onDeleteFolder(QModelIndex& indx)
 
 void XFeed::on_xtree_doubleClicked(const QModelIndex &index)
 {
-    qDebug()<<"Fetch data from here!";
+    ui->textBrowser->clear();
     xmodel_.fetchChannel(index);
+}
+
+void XFeed::on_feed_data_ready(QStandardItemModel &data)
+{
+
+    ui->tableView->setModel(&data);
+    ui->tableView->resizeColumnsToContents();
+
+}
+
+
+void XFeed::on_tableView_clicked(const QModelIndex &index)
+{
+
+    if (!index.isValid()) {
+        ui->textBrowser->clear();
+        return;
+    }
+
+    // Retrieve the description stored in Qt::UserRole from the Title column (column 0)
+    QString descriptionHtml = index.sibling(index.row(), 0).data(Qt::UserRole).toString();
+    if (descriptionHtml.isEmpty()) {
+        ui->textBrowser->setText("No content available for this item.");
+        return;
+    }
+
+    // Replace <img> tags with their src URL or alt text
+    QRegularExpression imgRegex("<img\\s+[^>]*src=\"([^\"]+)\"[^>]*alt=\"([^\"]*)\"[^>]*>",
+                                QRegularExpression::CaseInsensitiveOption);
+    QString modifiedHtml = descriptionHtml;
+
+    // Option 1: Replace with clickable link (src URL)
+    modifiedHtml.replace(imgRegex, "<a href=\"\\1\">Image Link: \\1</a>");
+
+    // Option 2: Replace with alt text (caption) - Uncomment this instead if preferred
+    // modifiedHtml.replace(imgRegex, "<p>Image Caption: \\2</p>");
+
+    // Debugging: Log the modified HTML
+    qDebug() << "Modified HTML snippet:" << modifiedHtml.left(500);
+
+    // Configure QTextBrowser
+    ui->textBrowser->setOpenExternalLinks(true);  // Enable clickable links
+    ui->textBrowser->setWordWrapMode(QTextOption::WrapAtWordBoundaryOrAnywhere);
+    ui->textBrowser->setSearchPaths({});          // Clear any local search paths
+    ui->textBrowser->setHtml(modifiedHtml);       // Set the modified HTML
+}
+
+
+void XFeed::on_tableView_doubleClicked(const QModelIndex &index)
+{
+    QUrl descriptionHtml = index.sibling(index.row(), 1).data(Qt::UserRole).toUrl();
+
+    QDesktopServices::openUrl(descriptionHtml);
 }
 
