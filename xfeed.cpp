@@ -5,6 +5,7 @@
 #include "xjsonadapter.h"
 #include <QMessageBox>
 #include <QDesktopServices>
+#include <QWidgetAction>
 XFeed::XFeed(QWidget *parent)
     : QMainWindow(parent)
     , ui(new Ui::XFeed)
@@ -17,6 +18,8 @@ XFeed::XFeed(QWidget *parent)
 
         ui->xtree->setModel(model_.get());
         connect(&xmodel_, &XFeedModel::feed_data_ready, this, &XFeed::on_feed_data_ready);
+        // Setup toolbar
+        fill_tool_bar();
     } catch (std::logic_error e) {
         QMessageBox::critical(this,"Database error",e.what());
         qDebug()<<e.what();
@@ -26,6 +29,18 @@ XFeed::XFeed(QWidget *parent)
 XFeed::~XFeed()
 {
     delete ui;
+}
+
+void XFeed::fill_tool_bar()
+{
+    QAction *refresh_act = new QAction("Refresh Channel", this);
+    refresh_act->setIcon(QIcon(":/toolbar/icons/media/icons/refresh.png"));
+    connect(refresh_act, &QAction::triggered, this, [this](){
+        ui->textBrowser->clear();
+        xmodel_.fetchChannel(ui->xtree->currentIndex());
+    });
+    ui->toolBar->addAction(refresh_act);
+
 }
 
 
@@ -171,4 +186,7 @@ void XFeed::on_tableView_doubleClicked(const QModelIndex &index)
 
     QDesktopServices::openUrl(descriptionHtml);
 }
+
+
+
 
