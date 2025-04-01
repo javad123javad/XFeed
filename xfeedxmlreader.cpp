@@ -5,27 +5,37 @@
 #include <QUrl>
 #include <QTextDocument>
 #include <QRegularExpression>
+
 XFeedXMLReader::XFeedXMLReader() {}
 
 void XFeedXMLReader::parseFeed(QIODevice* feed_data, QStandardItemModel& feedDataModel)
 {
     xml_.setDevice(feed_data);
-
+    // qDebug()<<feed_data->readAll();
     // Set table headers
     feedDataModel.clear();
-    feedDataModel.setColumnCount(3); // Add a column for images
+    feedDataModel.setColumnCount(3); // Title, Link, Pub Date
     feedDataModel.setHorizontalHeaderLabels({"Title", "Link", "Pub Date"});
 
     while (!xml_.atEnd()) {
         QXmlStreamReader::TokenType token = xml_.readNext();
-
-        if (token == QXmlStreamReader::StartElement && xml_.name() == "item") {
+        // Handle both <item> (RSS 2.0) and <item rdf:about="..."> (RDF/RSS 1.0)
+        if (token == QXmlStreamReader::StartElement &&
+            (xml_.name() == "item" || (xml_.name() == "li" && xml_.namespaceUri().toString().contains("rdf"))))
+        {
             QList<QStandardItem*> rowItems;
             QStandardItem *titleItem = new QStandardItem();
             QStandardItem *linkItem = new QStandardItem();
             QStandardItem *dateItem = new QStandardItem();
             QString descriptionText;
             QString linkText;
+
+            // Handle rdf:about as a possible link source (RDF format)
+            if (xml_.name() == "item" && xml_.attributes().hasAttribute("rdf:about")) {
+                linkText = xml_.attributes().value("rdf:about").toString();
+                linkItem->setText(linkText);
+                qDebug()<<linkText;
+            }
 
             while (!(xml_.tokenType() == QXmlStreamReader::EndElement && xml_.name() == "item")) {
                 xml_.readNext();
@@ -38,7 +48,8 @@ void XFeedXMLReader::parseFeed(QIODevice* feed_data, QStandardItemModel& feedDat
                     if (localName == "title") {
                         titleItem->setText(text);
                     }
-                    else if (localName == "link") {
+                    else if (localName == "link" && linkText.isEmpty()) {
+                        // Prefer rdf:about, but fall back to link tag
                         linkText = text;
                         linkItem->setText(text);
                     }
@@ -53,7 +64,7 @@ void XFeedXMLReader::parseFeed(QIODevice* feed_data, QStandardItemModel& feedDat
                 }
             }
 
-            // Store the full HTML description in the title item for QTextBrowser
+            // Store the full HTML description in titleItem for QTextBrowser
             titleItem->setData(descriptionText, Qt::UserRole);
             linkItem->setData(linkText, Qt::UserRole);
 
@@ -66,5 +77,4 @@ void XFeedXMLReader::parseFeed(QIODevice* feed_data, QStandardItemModel& feedDat
         qDebug() << "XML Error:" << xml_.errorString();
     }
 }
-
 

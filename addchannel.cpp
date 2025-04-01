@@ -25,17 +25,20 @@ AddChannel::~AddChannel()
 
 bool AddChannel::validateChannelInfo()
 {
-    bool is_valid = true;
+    QString urlText = ui->lin_ch_url->text().trimmed();
+    QUrl url(urlText, QUrl::StrictMode); // Enforce strict parsing
 
-    if(ui->lin_ch_name->text().isEmpty()
-        || ui->lin_ch_url->text().isEmpty()
+    if (ui->lin_ch_name->text().isEmpty()
+        || !url.isValid()
+        || url.scheme().isEmpty() // Ensure the scheme is present
+        || (url.scheme() != "http" && url.scheme() != "https") // Restrict to web URLs
+        || url.host().isEmpty() // Ensure a valid host is present
         || ui->cmb_folder->currentText().isEmpty())
     {
-        is_valid = false;
+        return false;
     }
 
-    return is_valid;
-
+    return true;
 }
 
 void AddChannel::setCurrentFolder(const QString &folderName)
@@ -46,23 +49,18 @@ void AddChannel::setCurrentFolder(const QString &folderName)
         return;
     }
 
-    qDebug() << "Searching for folder:" << folderName;
-
     // Loop through the model to find the matching folder name
     for (int i = 0; i < model->rowCount(); ++i) {
         QModelIndex index = model->index(i, 0); // Assuming folder names are in column 0
         QString itemText = model->data(index, Qt::DisplayRole).toString().trimmed();
 
-        qDebug() << "Checking item [" << i << "]:" << itemText;
 
         if (itemText.compare(folderName.trimmed(), Qt::CaseInsensitive) == 0) {
             ui->cmb_folder->setCurrentIndex(i);  // Set the matching index
-            qDebug() << "Set current folder to:" << folderName << "at index:" << i;
             return;
         }
     }
 
-    qDebug() << "Oops, no such folder name found in model!";
 }
 
 

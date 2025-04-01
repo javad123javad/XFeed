@@ -56,18 +56,6 @@
         },
         {
             "folderName": "News",
-            "name": "Test69",
-            "url": "www.test.com/feed/rss.xml",
-            "uuid": "11240"
-        },
-        {
-            "folderName": "Test2",
-            "name": "Test22",
-            "url": "https://likeradiostream.com/likepop",
-            "uuid": "{00000000-0000-0000-0000-000000000000}"
-        },
-        {
-            "folderName": "News",
             "name": "Nasa News",
             "url": "https://www.nasa.gov/news-release/feed/",
             "uuid": "{07b783d5-efc3-4a27-8abc-39f1775b0b44}"
@@ -77,6 +65,12 @@
             "name": "NASA News",
             "url": "https://www.nasa.gov/news-release/feed/",
             "uuid": "{77a87076-79e0-421d-940c-56eecefcbcec}"
+        },
+        {
+            "folderName": "News",
+            "name": "wer",
+            "url": "sdf",
+            "uuid": "{f42cf550-4967-4e9f-bb93-8b3532a7fadb}"
         }
     ],
     "Folders": [
@@ -86,7 +80,6 @@
         "IT",
         "Science",
         "Linux",
-        "Test",
-        "Test2"
+        "Test"
     ]
 }

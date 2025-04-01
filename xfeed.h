@@ -33,6 +33,8 @@ private:
     QMenu treeMenu;
     void fetchAndSetImage(QString imageUrl, QTextBrowser* textBrowser);
     void fill_tool_bar();
+    QString getDatabasePath();
+
 
 private slots:
     void on_actionAdd_Channel_triggered();

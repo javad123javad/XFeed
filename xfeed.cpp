@@ -5,7 +5,8 @@
 #include "xjsonadapter.h"
 #include <QMessageBox>
 #include <QDesktopServices>
-#include <QWidgetAction>
+#include <QStandardPaths>
+#include <QDir>
 XFeed::XFeed(QWidget *parent)
     : QMainWindow(parent)
     , ui(new Ui::XFeed)
@@ -14,7 +15,7 @@ XFeed::XFeed(QWidget *parent)
     try {
 
         // XJSonAdapter jsonAdapter_();
-        model_ = xmodel_.getModelFromData("/home/javad/workspace/QtWorkspace/XFeed/db.json");
+        model_ = xmodel_.getModelFromData(getDatabasePath());
 
         ui->xtree->setModel(model_.get());
         connect(&xmodel_, &XFeedModel::feed_data_ready, this, &XFeed::on_feed_data_ready);
@@ -89,6 +90,9 @@ void XFeed::on_xtree_customContextMenuRequested(const QPoint &pos)
         }
         else
         {
+            QAction *act_add_ch = new QAction("Add Channel",this);
+            connect(act_add_ch, &QAction::triggered, this, &XFeed::on_actionAdd_Channel_triggered);
+            treeMenu.addAction(act_add_ch);
             QAction *act_del = new QAction("Delete Folder", this);
             connect(act_del, &QAction::triggered, this, [this, &index](){onDeleteFolder(index);});
             treeMenu.addAction(act_del);
@@ -188,5 +192,11 @@ void XFeed::on_tableView_doubleClicked(const QModelIndex &index)
 }
 
 
+QString XFeed::getDatabasePath()
+{
+    QString dataPath = QStandardPaths::writableLocation(QStandardPaths::AppDataLocation);
+    QDir().mkpath(dataPath); // Ensure the directory exists
 
+    return dataPath + "/db.json"; // Full path to db.json
+}
 
