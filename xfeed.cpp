@@ -215,3 +215,10 @@ void XFeed::on_action_Open_Feed_Database_triggered()
     }
 }
 
+
+void XFeed::on_action_Exit_triggered()
+{
+    QApplication::quit();
+
+}
+

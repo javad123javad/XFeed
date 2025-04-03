@@ -120,6 +120,8 @@
      <string>File</string>
     </property>
     <addaction name="action_Open_Feed_Database"/>
+    <addaction name="separator"/>
+    <addaction name="action_Exit"/>
    </widget>
    <widget class="QMenu" name="menuFeed">
     <property name="title">
@@ -162,6 +164,11 @@
   <action name="action_Open_Feed_Database">
    <property name="text">
     <string>&amp;Open Feed Database</string>
+   </property>
+  </action>
+  <action name="action_Exit">
+   <property name="text">
+    <string>&amp;Exit</string>
    </property>
   </action>
  </widget>
