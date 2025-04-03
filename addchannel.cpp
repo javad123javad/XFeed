@@ -3,7 +3,7 @@
 #include <QMessageBox>
 #include <QStandardItem>
 
-AddChannel::AddChannel(QAbstractItemModel *model, ChannelInfo& chInfo, QWidget *parent)
+AddChannel::AddChannel(QStandardItemModel *model, ChannelInfo& chInfo, QWidget *parent)
     : QDialog(parent)
     , ui(new Ui::AddChannel)
     , chInfo_(chInfo)
@@ -12,9 +12,16 @@ AddChannel::AddChannel(QAbstractItemModel *model, ChannelInfo& chInfo, QWidget *
 
     ui->lin_ch_url->setText(chInfo.getChAddr());
     ui->lin_ch_name->setText(chInfo.getChName());
-    ui->cmb_folder->setModel(model);
-    qDebug()<<"Folder Name:"<<chInfo.chFolder();
-    setCurrentFolder(chInfo.chFolder());
+
+    for(int j = 0; j < model->rowCount(); j++)
+    {
+        for(int i =0 ; i < model->item(j,0)->rowCount(); i++)
+        {
+            auto itemData = model->item(j,0)->child(i,0)->data();
+            ui->cmb_folder->addItem(itemData.toString(),itemData);
+        }
+    }
+        setCurrentFolder(chInfo.chFolder());
 }
 
 AddChannel::~AddChannel()
@@ -33,7 +40,8 @@ bool AddChannel::validateChannelInfo()
         || url.scheme().isEmpty() // Ensure the scheme is present
         || (url.scheme() != "http" && url.scheme() != "https") // Restrict to web URLs
         || url.host().isEmpty() // Ensure a valid host is present
-        || ui->cmb_folder->currentText().isEmpty())
+        || ui->cmb_folder->currentText().isEmpty()
+        )
     {
         return false;
     }

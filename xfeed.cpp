@@ -20,6 +20,7 @@ XFeed::XFeed(QWidget *parent)
         model_ = xmodel_.getModelFromData(getDatabasePath());
 
         ui->xtree->setModel(model_.get());
+        ui->xtree->expandAll();
         connect(&xmodel_, &XFeedModel::feed_data_ready, this, &XFeed::on_feed_data_ready);
         // Setup toolbar
         fill_tool_bar();
@@ -209,6 +210,7 @@ void XFeed::on_action_Open_Feed_Database_triggered()
         model_ = xmodel_.getModelFromData(fileName);
 
         ui->xtree->setModel(model_.get());
+        ui->xtree->expandAll();
         connect(&xmodel_, &XFeedModel::feed_data_ready, this, &XFeed::on_feed_data_ready);
     } catch (std::logic_error e) {
         qDebug()<<e.what();

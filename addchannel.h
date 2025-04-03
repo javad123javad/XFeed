@@ -16,7 +16,7 @@ class AddChannel : public QDialog
     Q_OBJECT
 
 public:
-    explicit AddChannel(QAbstractItemModel *model, ChannelInfo& chInfo,QWidget *parent = nullptr);
+    explicit AddChannel(QStandardItemModel *model, ChannelInfo& chInfo,QWidget *parent = nullptr);
     ~AddChannel();
 
     QString getChName() const;

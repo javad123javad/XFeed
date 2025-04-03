@@ -53,6 +53,9 @@ std::shared_ptr<QStandardItemModel> XJSonAdapter::createModelFromJson() {
     // Use a map to group channels by type
     QMap<QString, QStandardItem*> folderMap;
     // Fill map with folder items
+    QStandardItem* rssRootItem = new QStandardItem("RSS");
+    itemModel->appendRow(rssRootItem);
+
     for(const QJsonValue& folderValue:folderArray)
     {
         auto folderName = folderValue.toString();
@@ -60,7 +63,7 @@ std::shared_ptr<QStandardItemModel> XJSonAdapter::createModelFromJson() {
             auto folderItem = std::make_unique<QStandardItem>(folderName);
             folderItem->setData(folderName);
             folderMap[folderName] = folderItem.get(); // Store raw pointer
-            itemModel->appendRow(folderItem.release()); // Transfer ownership to the model
+            rssRootItem->appendRow(folderItem.release()); // Transfer ownership to the model
         }
     }
 

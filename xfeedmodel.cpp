@@ -40,7 +40,7 @@ void XFeedModel::addFolder(const QString &folderName)
 }
 // Helper function to find a folder in the model
 QStandardItem* XFeedModel::findFolder(const QString& folderName) const {
-    QList<QStandardItem*> folderItems = model_->findItems(folderName, Qt::MatchExactly, 0);
+    QList<QStandardItem*> folderItems = model_->findItems(folderName, Qt::MatchExactly | Qt::MatchRecursive, 0);
     return folderItems.isEmpty() ? nullptr : folderItems.first();
 }
 void XFeedModel::addChannel(const ChannelInfo &channelInfo) {
