@@ -48,5 +48,6 @@ private slots:
     void on_feed_data_ready(QStandardItemModel& data);
     void on_tableView_clicked(const QModelIndex &index);
     void on_tableView_doubleClicked(const QModelIndex &index);
+    void on_action_Open_Feed_Database_triggered();
 };
 #endif // XFEED_H

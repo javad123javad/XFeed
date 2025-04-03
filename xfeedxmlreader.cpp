@@ -34,7 +34,6 @@ void XFeedXMLReader::parseFeed(QIODevice* feed_data, QStandardItemModel& feedDat
             if (xml_.name() == "item" && xml_.attributes().hasAttribute("rdf:about")) {
                 linkText = xml_.attributes().value("rdf:about").toString();
                 linkItem->setText(linkText);
-                qDebug()<<linkText;
             }
 
             while (!(xml_.tokenType() == QXmlStreamReader::EndElement && xml_.name() == "item")) {

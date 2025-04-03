@@ -55,12 +55,10 @@ void XFeedModel::addChannel(const ChannelInfo &channelInfo) {
         channelItem->setData(channelInfo.chFolder(), Qt::UserRole + 3);  // Store folderName
 
         folderItem->appendRow(channelItem); // Add to folder
-        qDebug() << "Added new channel:" << channelInfo.getChName() << "under folder:" << folderItem->text();
 
         // Update JSON
 
         updateJsonDatabase(channelInfo);
-        qDebug()<<"Json File updated";
     } else {
         qWarning() << "Folder not found in model:" << channelInfo.chFolder();
     }
@@ -127,7 +125,6 @@ void XFeedModel::deleteFolder(const QModelIndex &index)
     QJsonArray channels = root["Channels"].toArray();
 
     QString folderName = model_->data(index,Qt::UserRole + 1).toString();
-    qDebug()<<"Target folder to delete:"<<folderName;
     //First delete all channels in this folder
     for (int i = channels.size() - 1; i >= 0; --i) {
         if (channels[i].toObject()["folderName"].toString() == folderName) {
@@ -155,7 +152,6 @@ void XFeedModel::deleteFolder(const QModelIndex &index)
 void XFeedModel::fetchChannel(const QModelIndex &index)
 {
     QString url = model_->data(index, Qt::UserRole+1).toString();
-    qDebug()<<url;
     net_manager->get(QNetworkRequest(QUrl(url)));
     // QMediaPlayer *player = new QMediaPlayer(this);
     // QAudioOutput *audioOutput = new QAudioOutput(this);

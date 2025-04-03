@@ -7,6 +7,8 @@
 #include <QDesktopServices>
 #include <QStandardPaths>
 #include <QDir>
+#include <QFileDialog>
+
 XFeed::XFeed(QWidget *parent)
     : QMainWindow(parent)
     , ui(new Ui::XFeed)
@@ -49,7 +51,7 @@ void XFeed::fill_tool_bar()
 void XFeed::on_actionAdd_Channel_triggered()
 {
     ChannelInfo chInfo;
-    qDebug()<<"New Channel UUID:"<<chInfo.chUUID().toString();
+
     AddChannel addCh(model_.get(), chInfo, this);
 
     if(addCh.exec())
@@ -167,14 +169,8 @@ void XFeed::on_tableView_clicked(const QModelIndex &index)
                                 QRegularExpression::CaseInsensitiveOption);
     QString modifiedHtml = descriptionHtml;
 
-    // Option 1: Replace with clickable link (src URL)
+    // Replace with clickable link (src URL)
     modifiedHtml.replace(imgRegex, "<a href=\"\\1\">Image Link: \\1</a>");
-
-    // Option 2: Replace with alt text (caption) - Uncomment this instead if preferred
-    // modifiedHtml.replace(imgRegex, "<p>Image Caption: \\2</p>");
-
-    // Debugging: Log the modified HTML
-    qDebug() << "Modified HTML snippet:" << modifiedHtml.left(500);
 
     // Configure QTextBrowser
     ui->textBrowser->setOpenExternalLinks(true);  // Enable clickable links
@@ -198,5 +194,24 @@ QString XFeed::getDatabasePath()
     QDir().mkpath(dataPath); // Ensure the directory exists
 
     return dataPath + "/db.json"; // Full path to db.json
+}
+
+
+void XFeed::on_action_Open_Feed_Database_triggered()
+{
+    QString dataPath = QStandardPaths::writableLocation(QStandardPaths::AppDataLocation);
+    QString fileName = QFileDialog::getOpenFileName(this,
+                                            tr("Open XFeed Database"), dataPath, tr("JSon Files (*.json)"));
+
+    try {
+
+        model_->clear();
+        model_ = xmodel_.getModelFromData(fileName);
+
+        ui->xtree->setModel(model_.get());
+        connect(&xmodel_, &XFeedModel::feed_data_ready, this, &XFeed::on_feed_data_ready);
+    } catch (std::logic_error e) {
+        qDebug()<<e.what();
+    }
 }
 

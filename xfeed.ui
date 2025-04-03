@@ -119,6 +119,7 @@
     <property name="title">
      <string>File</string>
     </property>
+    <addaction name="action_Open_Feed_Database"/>
    </widget>
    <widget class="QMenu" name="menuFeed">
     <property name="title">
@@ -156,6 +157,11 @@
   <action name="actionAdd_Folder">
    <property name="text">
     <string>Add &amp;Folder</string>
+   </property>
+  </action>
+  <action name="action_Open_Feed_Database">
+   <property name="text">
+    <string>&amp;Open Feed Database</string>
    </property>
   </action>
  </widget>
