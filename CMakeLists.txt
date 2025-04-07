@@ -15,7 +15,6 @@ find_package(Qt${QT_VERSION_MAJOR} REQUIRED COMPONENTS Xml)
 find_package(Qt${QT_VERSION_MAJOR} REQUIRED COMPONENTS Test)
 find_package(Qt${QT_VERSION_MAJOR} REQUIRED COMPONENTS Network)
 find_package(Qt${QT_VERSION_MAJOR} REQUIRED COMPONENTS Multimedia)
-find_package(KF6Syndication REQUIRED)
 set(PROJECT_SOURCES
         main.cpp
         xfeed.cpp
@@ -69,7 +68,6 @@ target_link_libraries(XMLFeedReader PRIVATE Qt6::Xml)
 target_link_libraries(XMLFeedReader PRIVATE Qt6::Test)
 target_link_libraries(XMLFeedReader PRIVATE Qt6::Network)
 target_link_libraries(XMLFeedReader PRIVATE Qt6::Multimedia)
-target_link_libraries(XMLFeedReader PRIVATE KF6::Syndication)
 
 # Qt for iOS sets MACOSX_BUNDLE_GUI_IDENTIFIER automatically since Qt 6.1.
 # If you are developing for iOS or macOS you should consider setting an
