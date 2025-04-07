@@ -1,7 +1,7 @@
 #include "xjsonadapter.h"
 #include <QJsonObject>
 #include <QJsonArray>
-
+#include "channelmodelbuilder.h"
 XJSonAdapter::XJSonAdapter(const QString &file, QObject *parent)
     : fileName_(file), QObject{parent}
 {
@@ -40,8 +40,11 @@ void XJSonAdapter::exportToJson(const QJsonDocument& jdoc)
 
 }
 
-std::shared_ptr<QStandardItemModel> XJSonAdapter::createModelFromJson() {
-    auto itemModel = std::make_shared<QStandardItemModel>();
+std::shared_ptr<QStandardItemModel> XJSonAdapter::createModelFromJson()
+{
+    ChannelModelBuilder builder;
+
+
     readJsonFile();
 
     if (jdoc_.isNull()) {
@@ -50,42 +53,13 @@ std::shared_ptr<QStandardItemModel> XJSonAdapter::createModelFromJson() {
     const QJsonObject root = jdoc_.object();
     const QJsonArray folderArray = root["Folders"].toArray();
     const QJsonArray channelsArray = root["Channels"].toArray();
-    // Use a map to group channels by type
-    QMap<QString, QStandardItem*> folderMap;
-    // Fill map with folder items
-    QStandardItem* rssRootItem = new QStandardItem("RSS");
-    itemModel->appendRow(rssRootItem);
+    const QJsonArray chTypesArray = root["Types"].toArray();
 
-    for(const QJsonValue& folderValue:folderArray)
-    {
-        auto folderName = folderValue.toString();
-        if (!folderMap.contains(folderName)) {
-            auto folderItem = std::make_unique<QStandardItem>(folderName);
-            folderItem->setData(folderName);
-            folderMap[folderName] = folderItem.get(); // Store raw pointer
-            rssRootItem->appendRow(folderItem.release()); // Transfer ownership to the model
-        }
-    }
+    builder.addTypes(chTypesArray);
+    builder.addFolders(folderArray);
+    builder.addChannels(channelsArray);
 
-    for (const QJsonValue& channelValue : channelsArray) {
-        const QJsonObject channelObj = channelValue.toObject();
-        const QString folderName = channelObj["folderName"].toString();
-
-        // Add the channel to the folder
-        auto channelItem = std::make_unique<QStandardItem>(channelObj["name"].toString());
-
-        channelItem->setData(channelObj["name"].toString(), Qt::UserRole); // Name
-        channelItem->setData(channelObj["url"].toString(), Qt::UserRole + 1); // Store url
-        channelItem->setData(channelObj["uuid"].toString(), Qt::UserRole + 2); // Store uuid
-        channelItem->setData(channelObj["folderName"].toString(), Qt::UserRole + 3);
-
-
-        folderMap[folderName]->appendRow(channelItem.release()); // Transfer ownership to the model
-
-
-    }
-
-    return std::move(itemModel);
+    return builder.build();
 }
 
 const QJsonDocument XJSonAdapter::getJsonDoc() const

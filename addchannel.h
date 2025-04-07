@@ -5,7 +5,7 @@
 #include <QAbstractItemModel>
 
 #include "channelinfo.h"
-#include "xfeedfolder.h"
+
 #include <QStandardItemModel>
 namespace Ui {
 class AddChannel;

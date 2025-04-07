@@ -44,6 +44,8 @@ if(${QT_VERSION_MAJOR} GREATER_EQUAL 6)
         xfeedmodel.h xfeedmodel.cpp
         XCommon.h
         Icons.qrc
+        channelfactory.h channelfactory.cpp
+        channelmodelbuilder.h channelmodelbuilder.cpp
     )
 # Define target properties for Android with Qt 6 as:
 #    set_property(TARGET XMLFeedReader APPEND PROPERTY QT_ANDROID_PACKAGE_SOURCE_DIR
@@ -105,6 +107,7 @@ qt_add_executable(XFeed_Test
 
     tests/xfeedtest.cpp
     tests/xfeedtest.h
+    channelmodelbuilder.h channelmodelbuilder.cpp
 
 
 

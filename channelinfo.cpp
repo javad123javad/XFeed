@@ -24,6 +24,15 @@ QJsonObject ChannelInfo::toJson() const {
     return json;
 }
 
+ChannelInfo::ChannelInfo(const QJsonObject& obj)
+{
+    chName_ = obj["name"].toString();
+    chAddr_ = obj["url"].toString();
+    chUUID_ = QUuid(obj["uuid"].toString());
+    chFolder_ =  obj["folderName"].toString();
+    chType_ = obj["type"].toString();
+}
+
 QUuid ChannelInfo::chUUID() const
 {
     return chUUID_;
@@ -33,3 +42,4 @@ void ChannelInfo::setChUUID(const QUuid &newChUUID)
 {
     chUUID_ = newChUUID;
 }
+

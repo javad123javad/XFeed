@@ -3,7 +3,7 @@
 #include <QObject>
 #include <QMap>
 #include <QUuid>
-
+#include <QJsonObject>
 struct ChannelInfo: public QObject
 {
     Q_OBJECT
@@ -20,6 +20,9 @@ public:
         chFolder_ = chInfo.chFolder_;
         chUUID_ = chInfo.chUUID_;
     }
+
+    ChannelInfo(const QJsonObject& obj);
+
 
     ChannelInfo & operator=(const ChannelInfo & other)
     {
@@ -82,6 +85,7 @@ private:
     QString chAddr_;
     QString chComment_;
     QString chFolder_;
+    QString chType_;
     QUuid chUUID_;
 
 };
