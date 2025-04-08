@@ -102,13 +102,18 @@ void XFeedModel::editChannel(const QModelIndex& idx, const ChannelInfo &channelI
 
 void XFeedModel::deleteChannel(const QModelIndex &indx)
 {
+    qDebug()<<"Deleting Channel!";
     if(!indx.isValid())
     {
+        qDebug()<<"Invalid item idnex";
+
         throw std::invalid_argument("Invalid item idnex");
     }
 
     if(!model_)
     {
+        qDebug()<<"Invalid Model: model_";
+
         throw std::invalid_argument("Invalid Model: model_");
     }
 
@@ -224,11 +229,14 @@ void XFeedModel::deleteItemFromJsonDatabase(const QModelIndex &idx)
     QJsonArray channelsArray = root["Channels"].toArray();
 
     auto uuid = model_->data(idx, Qt::UserRole + 2).toString();
+    qDebug()<<"UUID:"<<uuid;
     for(auto it = channelsArray.begin(); it != channelsArray.end(); ++it)
     {
         QJsonObject ch = it->toObject();
+
         if((ch["uuid"].toString() == uuid))
         {
+            qDebug()<<"Channel Found for Deleting! in JSON";
             channelsArray.erase(it);
             break;
         }
