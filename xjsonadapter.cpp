@@ -55,8 +55,8 @@ std::shared_ptr<QStandardItemModel> XJSonAdapter::createModelFromJson()
     const QJsonArray channelsArray = root["Channels"].toArray();
     const QJsonArray chTypesArray = root["Types"].toArray();
 
-    builder.addTypes(chTypesArray);
-    builder.addFolders(folderArray);
+    // builder.addTypes(channelsArray);
+    // builder.addFolders(folderArray);
     builder.addChannels(channelsArray);
 
     return builder.build();

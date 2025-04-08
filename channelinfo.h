@@ -33,9 +33,21 @@ public:
             this->setChComment(other.chComment_);
             this->setChFolder(other.chFolder_);
             this->setChUUID(other.chUUID_);
+            this->chType_ = other.chType_;
         }
 
         return *this;
+    }
+    ChannelInfo(const ChannelInfo&& other) {
+        if(this != &other)
+        {
+            this->setChAddr(std::move(other.chAddr_));
+            this->setChName(std::move(other.chName_));
+            this->setChComment(std::move(other.chComment_));
+            this->setChFolder(std::move(other.chFolder_));
+            this->setChUUID(std::move(other.chUUID_));
+            this->chType_ = std::move(other.chType_);
+        }
     }
 
     QString getChComment() const
@@ -79,6 +91,8 @@ public:
 
     QUuid chUUID() const;
     void setChUUID(const QUuid &newChUUID);
+
+    QString chType() const;
 
 private:
     QString chName_;

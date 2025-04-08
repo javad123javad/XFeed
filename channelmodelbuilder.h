@@ -20,6 +20,9 @@ public:
 private:
     std::shared_ptr<QStandardItemModel> model_;
     QMap<QString, QStandardItem*> folderMap_;
+    QMap<QString, QStandardItem*> typeMap;
+    QMap<QString, QMap<QString, QList<QStandardItem*>>> folders;
+
 };
 
 #endif // CHANNELMODELBUILDER_H

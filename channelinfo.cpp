@@ -43,3 +43,8 @@ void ChannelInfo::setChUUID(const QUuid &newChUUID)
     chUUID_ = newChUUID;
 }
 
+QString ChannelInfo::chType() const
+{
+    return chType_;
+}
+
