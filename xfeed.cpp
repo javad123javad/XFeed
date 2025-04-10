@@ -132,6 +132,7 @@ void XFeed::onDeleteChannel(QModelIndex indx)
 void XFeed::onDeleteFolder(QModelIndex& indx)
 {
     xmodel_.deleteFolder(indx);
+    ui->xtree->update();
 }
 
 

@@ -37,6 +37,8 @@ void XJSonAdapter::exportToJson(const QJsonDocument& jdoc)
     jfile.open(QIODevice::WriteOnly);
     jfile.write(jdoc.toJson());
     jfile.close();
+    //reload again
+    readJsonFile();
 
 }
 
@@ -51,12 +53,8 @@ std::shared_ptr<QStandardItemModel> XJSonAdapter::createModelFromJson()
         throw std::logic_error("Invalid JSON Document");
     }
     const QJsonObject root = jdoc_.object();
-    const QJsonArray folderArray = root["Folders"].toArray();
     const QJsonArray channelsArray = root["Channels"].toArray();
-    const QJsonArray chTypesArray = root["Types"].toArray();
 
-    // builder.addTypes(channelsArray);
-    // builder.addFolders(folderArray);
     builder.addChannels(channelsArray);
 
     return builder.build();
