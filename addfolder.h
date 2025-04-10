@@ -3,7 +3,8 @@
 
 #include <QDialog>
 
-#include "xfeedfolder.h"
+#include <QStandardItemModel>
+#include <memory.h>
 
 namespace Ui {
 class AddFolder;
@@ -14,7 +15,7 @@ class AddFolder : public QDialog
     Q_OBJECT
 
 public:
-    explicit AddFolder(folder_list_t& folder_list, QWidget *parent = nullptr);
+    explicit AddFolder(std::shared_ptr<QStandardItemModel> model,QWidget *parent = nullptr);
     ~AddFolder();
 
     QString folderName() const;
@@ -22,8 +23,8 @@ public:
 private:
     Ui::AddFolder *ui;
     void check_new_folder();
-    folder_list_t& folderList_;
     QString folderName_;
+    std::shared_ptr<QStandardItemModel> model_;
 protected:
     void accept() override; // Override the accept() method
 };

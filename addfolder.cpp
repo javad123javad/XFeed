@@ -2,13 +2,15 @@
 #include "ui_addfolder.h"
 #include <QMessageBox>
 
-AddFolder::AddFolder(folder_list_t& folder_list, QWidget *parent)
+AddFolder::AddFolder(std::shared_ptr<QStandardItemModel> model, QWidget *parent)
     : QDialog(parent)
-    , ui(new Ui::AddFolder)
-    , folderList_(folder_list)
+    , ui(new Ui::AddFolder),
+    model_(model)
 {
     ui->setupUi(this);
 
+    // Misusing QQomboBox in displaying only root items ;)
+    ui->cmb_ch_type->setModel(model.get());
 }
 
 AddFolder::~AddFolder()
@@ -18,19 +20,11 @@ AddFolder::~AddFolder()
 
 void AddFolder::check_new_folder()
 {
-    if(ui->edt_folder_name->text().isEmpty())
+    if(ui->edt_folder_name->text().isEmpty()
+        || ui->cmb_ch_type->currentIndex() < 0)
     {
-        throw std::invalid_argument("Empty folder name is not allowed");
+        throw std::invalid_argument("Invalid forlder name/type.");
     }
-
-    for(auto& folder: folderList_)
-    {
-        if(folder->folderName() == ui->edt_folder_name->text())
-            throw std::invalid_argument("Folder name already exist");
-    }
-
-
-
 }
 
 QString AddFolder::folderName() const
