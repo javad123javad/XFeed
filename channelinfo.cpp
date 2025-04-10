@@ -48,3 +48,8 @@ QString ChannelInfo::chType() const
     return chType_;
 }
 
+void ChannelInfo::setChType(const QString &newChType)
+{
+    chType_ = newChType;
+}
+

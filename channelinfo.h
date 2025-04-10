@@ -19,6 +19,7 @@ public:
         chComment_ = chInfo.chComment_;
         chFolder_ = chInfo.chFolder_;
         chUUID_ = chInfo.chUUID_;
+        chType_ = chInfo.chType_;
     }
 
     ChannelInfo(const QJsonObject& obj);
@@ -93,6 +94,8 @@ public:
     void setChUUID(const QUuid &newChUUID);
 
     QString chType() const;
+
+    void setChType(const QString &newChType);
 
 private:
     QString chName_;
