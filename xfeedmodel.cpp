@@ -5,7 +5,7 @@
 #include <QMediaPlayer>
 #include <QAudioOutput>
 #include <QXmlStreamReader>
-
+#include "channelfactory.h"
 XFeedModel::XFeedModel(QObject *parent)
     : QObject{parent}
 {
@@ -43,25 +43,36 @@ QStandardItem* XFeedModel::findFolder(const QString& folderName) const {
     QList<QStandardItem*> folderItems = model_->findItems(folderName, Qt::MatchExactly | Qt::MatchRecursive, 0);
     return folderItems.isEmpty() ? nullptr : folderItems.first();
 }
-void XFeedModel::addChannel(const ChannelInfo &channelInfo) {
+void XFeedModel::addChannel(const ChannelInfo &channelInfo)
+{
+    bool itemAdded = false;
+    // First find type category
+    auto chTypes = model_->findItems(channelInfo.chType());
+    QStandardItem * chType = chTypes.first();
+    auto* channelItem = ChannelFactory::createChannelItem(channelInfo).release();
+    for(int i = 0; i < chType->rowCount(); i++)
+    {
+        if(chType->hasChildren())
+        {
+            if(chType->child(i,0)->data().toString() == channelInfo.chFolder())
+            {
+                // Create a new channel item
 
-    // Find the corresponding folder
-    if (QStandardItem* folderItem = findFolder(channelInfo.chFolder())) {
-        // Create a new channel item
-        auto* channelItem = new QStandardItem(channelInfo.getChName());
-        channelItem->setData(channelInfo.getChName(), Qt::UserRole);  // Store Name
-        channelItem->setData(channelInfo.getChAddr(), Qt::UserRole + 1);  // Store URL
-        channelItem->setData(channelInfo.chUUID().toString(), Qt::UserRole + 2);  // Store UUID
-        channelItem->setData(channelInfo.chFolder(), Qt::UserRole + 3);  // Store folderName
-
-        folderItem->appendRow(channelItem); // Add to folder
-
-        // Update JSON
-
-        updateJsonDatabase(channelInfo);
-    } else {
-        qWarning() << "Folder not found in model:" << channelInfo.chFolder();
+                chType->child(i,0)->appendRow(channelItem); // Add to folder
+                itemAdded = true;
+                break;
+            }
+        }
     }
+
+    if(!itemAdded)
+    {
+        QStandardItem *cnNewType = new QStandardItem(channelInfo.chFolder());
+        cnNewType->appendRow(channelItem);
+        chType->appendRow(cnNewType);
+    }
+
+    updateJsonDatabase(channelInfo);
 }
 
 void XFeedModel::editChannel(const QModelIndex& idx, const ChannelInfo &channelInfo)
@@ -182,6 +193,7 @@ void XFeedModel::updateJsonDatabase(const ChannelInfo &channelInfo) {
     newChannel["name"] = channelInfo.getChName();
     newChannel["url"] = channelInfo.getChAddr();
     newChannel["uuid"] = channelInfo.chUUID().toString();
+    newChannel["type"] = channelInfo.chType();
     channels.append(newChannel);
 
     root["Channels"] = channels;
