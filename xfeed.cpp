@@ -66,7 +66,7 @@ void XFeed::on_actionAdd_Channel_triggered()
 void XFeed::on_actionAdd_Folder_triggered()
 {
     // Get data from view
-    AddFolder addFolderDlg_(feedFolders_, this);
+    AddFolder addFolderDlg_(model_, this);
     if(addFolderDlg_.exec())
     {
         xmodel_.addFolder(addFolderDlg_.folderName());

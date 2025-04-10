@@ -27,7 +27,6 @@ public:
 private:
     Ui::XFeed *ui;
     XFeedXMLReader xreader;
-    folder_list_t feedFolders_;
     std::shared_ptr<QStandardItemModel> model_;
     XFeedModel xmodel_;
     QMenu treeMenu;
