@@ -13,15 +13,17 @@ AddChannel::AddChannel(QStandardItemModel *model, ChannelInfo& chInfo, QWidget *
     ui->lin_ch_url->setText(chInfo.getChAddr());
     ui->lin_ch_name->setText(chInfo.getChName());
 
-    for(int j = 0; j < model->rowCount(); j++)
+
+    ui->cmb_ch_type->setModel(model);
+    //for(int j = 0; j < model->rowCount(); j++)
     {
-        for(int i =0 ; i < model->item(j,0)->rowCount(); i++)
+        for(int i =0 ; i < model->item(0,0)->rowCount(); i++)
         {
-            auto itemData = model->item(j,0)->child(i,0)->data();
+            auto itemData = model->item(0,0)->child(i,0)->data();
             ui->cmb_folder->addItem(itemData.toString(),itemData);
         }
     }
-        setCurrentFolder(chInfo.chFolder());
+    setCurrentFolder(chInfo.chFolder());
 }
 
 AddChannel::~AddChannel()
@@ -41,6 +43,7 @@ bool AddChannel::validateChannelInfo()
         || (url.scheme() != "http" && url.scheme() != "https") // Restrict to web URLs
         || url.host().isEmpty() // Ensure a valid host is present
         || ui->cmb_folder->currentText().isEmpty()
+        || ui->cmb_ch_type->currentText().isEmpty()
         )
     {
         return false;
@@ -86,6 +89,7 @@ void AddChannel::accept()
         chInfo_.setChAddr(ui->lin_ch_url->text());
         chInfo_.setChComment(ui->txt_ch_comment->toPlainText());
         chInfo_.setChFolder(ui->cmb_folder->currentText());
+        chInfo_.setChType(ui->cmb_ch_type->currentText());
         QDialog::accept();
     }
 }
