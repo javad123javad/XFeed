@@ -255,19 +255,12 @@ void XFeedModel::deleteItemFromJsonDatabase(const QModelIndex &idx)
     }
     root["Channels"] = channelsArray;
     jsonAdapter_.exportToJson(QJsonDocument(root));
+
 }
 
 void XFeedModel::net_opr_finished(QNetworkReply* netReply)
 {
-    // char buf[1024]  ={0};
-    // while(netReply->read(buf, 1024)!=-1)
-    // {
-    //     qDebug()<<buf;
-    // }
-    // QXmlStreamReader xml(netReply);
     xmlReader.parseFeed(netReply, feedDataModel_);
     emit feed_data_ready(feedDataModel_);
-
-
 }
 
