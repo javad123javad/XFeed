@@ -21,7 +21,9 @@ xfeed_model_t XFeedModel::getModelFromData(const QString &dbPath)
 {
     qDebug()<<"getModelFromData:"<<dbPath;
     jsonAdapter_.setDbFileName(dbPath);
+
     model_ =   jsonAdapter_.createModelFromJson();
+
     return model_;
 }
 

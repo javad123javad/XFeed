@@ -12,7 +12,7 @@ public:
     void addFolders(const QJsonArray& folderArray);
     void addTypes(const QJsonArray& chTypeArray);
     void addChannels(const QJsonArray& channelsArray);
-
+    void fixChannels(QJsonObject &JDoc);
     std::shared_ptr<QStandardItemModel> build(){
         return std::move(model_);
     }

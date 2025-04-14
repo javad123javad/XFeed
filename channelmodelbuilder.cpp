@@ -77,3 +77,24 @@ void ChannelModelBuilder::addChannels(const QJsonArray &channelsArray)
     }
 
 }
+
+void ChannelModelBuilder::fixChannels(QJsonObject &jRoot)
+{
+    QJsonArray channelsArray = jRoot["Channels"].toArray();
+
+    for(auto it = channelsArray.begin(); it != channelsArray.end(); ++it)
+    {
+        QJsonObject ch = it->toObject();
+        QUuid chUUID(ch["uuid"].toString());
+        if(chUUID.isNull())
+        {
+
+            ch["uuid"] = QUuid::createUuid().toString();
+            qDebug()<<"Fix illegal UUID:"<<ch["uuid"].toString();
+            channelsArray.erase(it);
+            channelsArray.append(ch);
+        }
+    }
+    jRoot["Channels"] = channelsArray;
+
+}

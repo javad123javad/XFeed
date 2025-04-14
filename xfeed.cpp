@@ -114,7 +114,7 @@ void XFeed::onEditChannel(QModelIndex idx)
     chInfo.setChAddr(model_->itemFromIndex(idx)->data(Qt::UserRole + 1).toString());
     chInfo.setChUUID(QUuid::fromString(model_->itemFromIndex(idx)->data(Qt::UserRole + 2).toString()));
     chInfo.setChFolder(model_->itemFromIndex(idx)->data(Qt::UserRole + 3).toString());
-
+    chInfo.setChType(model_->itemFromIndex(idx)->data(Qt::UserRole + 4).toString());
     AddChannel edit_channel(model_.get(), chInfo, this);
     edit_channel.setWindowTitle("Edit Channel");
     if(edit_channel.exec())

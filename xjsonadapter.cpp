@@ -52,8 +52,16 @@ std::shared_ptr<QStandardItemModel> XJSonAdapter::createModelFromJson()
     if (jdoc_.isNull()) {
         throw std::logic_error("Invalid JSON Document");
     }
-    const QJsonObject root = jdoc_.object();
-    const QJsonArray channelsArray = root["Channels"].toArray();
+
+    QJsonObject root = jdoc_.object();
+    QJsonArray channelsArray = root["Channels"].toArray();
+
+    /* First fix any problems in the db File! */
+    builder.fixChannels(root);
+    exportToJson(QJsonDocument(root));
+
+    /* Now add the clean channels */
+    readJsonFile();
 
     builder.addChannels(channelsArray);
 

@@ -13,7 +13,6 @@ AddChannel::AddChannel(QStandardItemModel *model, ChannelInfo& chInfo, QWidget *
     ui->lin_ch_url->setText(chInfo.getChAddr());
     ui->lin_ch_name->setText(chInfo.getChName());
 
-
     ui->cmb_ch_type->setModel(model);
     //for(int j = 0; j < model->rowCount(); j++)
     {

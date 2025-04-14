@@ -12,13 +12,13 @@ class XJSonAdapter : public QObject
 public:
     friend class XFeedTest;
     explicit XJSonAdapter(const QString &file = "", QObject *parent = nullptr);
-private:
-    void readJsonFile();
+
 public:
     std::shared_ptr<QStandardItemModel> createModelFromJson();
     const QJsonDocument getJsonDoc() const;
     void setDbFileName(const QString& dBFile);
     void exportToJson(const QJsonDocument& jdoc);
+    void readJsonFile();
 
 
 private:
