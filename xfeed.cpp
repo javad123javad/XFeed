@@ -8,7 +8,7 @@
 #include <QStandardPaths>
 #include <QDir>
 #include <QFileDialog>
-
+#include "channelbehaviorregistry.h"
 XFeed::XFeed(QWidget *parent)
     : QMainWindow(parent)
     , ui(new Ui::XFeed)
@@ -138,8 +138,14 @@ void XFeed::onDeleteFolder(QModelIndex& indx)
 
 void XFeed::on_xtree_doubleClicked(const QModelIndex &index)
 {
-    ui->textBrowser->clear();
-    xmodel_.fetchChannel(index);
+    /* First check the type of the channel */
+    QVariant vData = model_->data(index, Qt::UserRole + 5);
+    ChannelInfo channelInfo = vData.value<ChannelInfo>();
+    if(channelInfo.chType() == "RSS")
+    {
+        ui->textBrowser->clear();
+        xmodel_.fetchChannel(index);
+    }
 }
 
 void XFeed::on_feed_data_ready(QStandardItemModel &data)
@@ -203,7 +209,7 @@ void XFeed::on_action_Open_Feed_Database_triggered()
 {
     QString dataPath = QStandardPaths::writableLocation(QStandardPaths::AppDataLocation);
     QString fileName = QFileDialog::getOpenFileName(this,
-                                            tr("Open XFeed Database"), dataPath, tr("JSon Files (*.json)"));
+                                                    tr("Open XFeed Database"), dataPath, tr("JSon Files (*.json)"));
 
     try {
 
@@ -223,5 +229,15 @@ void XFeed::on_action_Exit_triggered()
 {
     QApplication::quit();
 
+}
+
+void XFeed::displayChannel(const ChannelInfo &channel, QWidget *container)
+{
+    auto strategy = ChannelBehaviorRegistry::instance()->getDisplayStrategy(channel.chType());
+    if (strategy) {
+        strategy->display(channel, container);
+    } else {
+        // Fallback display method
+    }
 }
 

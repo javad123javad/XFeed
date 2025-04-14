@@ -180,6 +180,7 @@ void XFeedModel::fetchChannel(const QModelIndex &index)
     // player->play();
 
 
+
 }
 
 

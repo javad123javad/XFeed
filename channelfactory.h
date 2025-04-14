@@ -13,6 +13,7 @@ public:
         item->setData(channel.chUUID(), Qt::UserRole + 2);
         item->setData(channel.chFolder(), Qt::UserRole + 3);
         item->setData(channel.chType(), Qt::UserRole + 4);  // Store Type
+        item->setData(QVariant::fromValue(channel), Qt::UserRole + 5);  // Store Type
 
         return item;
     }

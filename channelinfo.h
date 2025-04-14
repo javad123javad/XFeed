@@ -12,7 +12,8 @@ public:
         chUUID_ = QUuid::createUuid();
     };
     ~ChannelInfo() override{}
-    ChannelInfo(ChannelInfo& chInfo)
+
+    ChannelInfo(const ChannelInfo& chInfo)
     {
         chName_ = chInfo.chName_;
         chAddr_ = chInfo.chAddr_;
@@ -23,7 +24,6 @@ public:
     }
 
     ChannelInfo(const QJsonObject& obj);
-
 
     ChannelInfo & operator=(const ChannelInfo & other)
     {
@@ -39,6 +39,7 @@ public:
 
         return *this;
     }
+
     ChannelInfo(const ChannelInfo&& other) {
         if(this != &other)
         {

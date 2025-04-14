@@ -49,5 +49,6 @@ private slots:
     void on_tableView_doubleClicked(const QModelIndex &index);
     void on_action_Open_Feed_Database_triggered();
     void on_action_Exit_triggered();
+    void displayChannel(const ChannelInfo& channel, QWidget* container);
 };
 #endif // XFEED_H

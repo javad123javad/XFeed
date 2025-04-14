@@ -2,6 +2,9 @@
 #include <QJsonObject>
 #include <QMetaProperty>
 
+#include <QMetaType>
+Q_DECLARE_METATYPE(ChannelInfo)
+
 QString ChannelInfo::chFolder() const
 {
     return chFolder_;
