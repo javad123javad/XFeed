@@ -6,7 +6,7 @@ class DisplayStrategy
 {
 public:
     virtual ~DisplayStrategy() = default;
-    virtual void display(const ChannelInfo& channel, QWidget* container) = 0;
+    virtual void display(const ChannelInfo& channel, QWidget* container = nullptr) = 0;
 };
 
 #endif // DISPLAYSTRATEGY_H
