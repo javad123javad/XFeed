@@ -9,6 +9,9 @@
 #include <QStandardItemModel>
 #include <QMenu>
 #include <QTextBrowser>
+#include <QMediaPlayer>
+#include "displaystrategy.h"
+
 QT_BEGIN_NAMESPACE
 namespace Ui {
 class XFeed;
@@ -33,7 +36,10 @@ private:
     void fetchAndSetImage(QString imageUrl, QTextBrowser* textBrowser);
     void fill_tool_bar();
     QString getDatabasePath();
-
+    void displayChannel(const ChannelInfo& channel, QWidget* container = nullptr);
+    void connectMediaControls(QToolBar* toolbar);
+    DisplayStrategy* strategy;
+    QAction* findActionByName(QToolBar* toolbar, const QString& name);
 
 private slots:
     void on_actionAdd_Channel_triggered();
@@ -49,6 +55,6 @@ private slots:
     void on_tableView_doubleClicked(const QModelIndex &index);
     void on_action_Open_Feed_Database_triggered();
     void on_action_Exit_triggered();
-    void displayChannel(const ChannelInfo& channel, QWidget* container);
+    void on_xtree_clicked(const QModelIndex &index);
 };
 #endif // XFEED_H

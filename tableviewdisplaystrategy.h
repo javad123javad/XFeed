@@ -13,6 +13,7 @@ public:
 
         // Setup model, delegates, etc.
     }
+    bool isMediaPlaySupported() override{return false;}
 };
 
 #endif // TABLEVIEWDISPLAYSTRATEGY_H

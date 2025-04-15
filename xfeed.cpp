@@ -45,12 +45,16 @@ void XFeed::fill_tool_bar()
     });
     /* Media player buttons */
     QAction *play_btn = new QAction("Play", this);
+    play_btn->setCheckable(true);
     play_btn->setIcon(QIcon(":/toolbar/icons/media/icons/play-button.png"));
-
-
+    play_btn->setEnabled(false);
     ui->toolBar->addAction(refresh_act);
     ui->toolBar->addSeparator();
     ui->toolBar->addAction(play_btn);
+
+    connectMediaControls(ui->toolBar);
+
+
 }
 
 
@@ -153,9 +157,15 @@ void XFeed::on_xtree_doubleClicked(const QModelIndex &index)
         ui->textBrowser->clear();
         xmodel_.fetchChannel(index);
     }
-    else if (channelInfo.chType() == "Radio")
+    else
     {
         // play the station
+        QAction* playAction = findActionByName(ui->toolBar, "Play");
+        if(playAction)
+        {
+            playAction->setEnabled(true);
+            playAction->setChecked(true);
+        }
         displayChannel(channelInfo);
     }
 }
@@ -245,11 +255,65 @@ void XFeed::on_action_Exit_triggered()
 
 void XFeed::displayChannel(const ChannelInfo &channel, QWidget *container)
 {
-    auto strategy = ChannelBehaviorRegistry::instance()->getDisplayStrategy(channel.chType());
+    strategy = ChannelBehaviorRegistry::instance()->getDisplayStrategy(channel.chType());
     if (strategy) {
         strategy->display(channel, container);
+
     } else {
         // Fallback display method
     }
+}
+// Then find them by iterating through actions:
+QAction* XFeed::findActionByName(QToolBar* toolbar, const QString& name) {
+    for (QAction* action : toolbar->actions()) {
+        if (action->text() == name) {
+            return action;
+        }
+    }
+    return nullptr;
+}
+void XFeed::connectMediaControls(QToolBar *toolbar)
+{
+    QAction* play_btn = findActionByName(ui->toolBar,"Play");
+    if(play_btn)
+    {
+        qDebug()<<"Whay am I null!!!";
+
+        connect(play_btn, &QAction::triggered, this, [this](bool toggeled){
+
+            if(strategy && strategy->isMediaPlaySupported())
+            {
+                if(toggeled)
+                    strategy->play();
+                else
+                    strategy->stop();
+            }
+        });
+    }
+}
+
+
+void XFeed::on_xtree_clicked(const QModelIndex &index)
+{
+    // if(index.parent().isValid())
+    // {
+    //     return;
+    // }
+
+    /* First check the type of the channel */
+    QVariant vData = model_->data(index, Qt::UserRole + 5);
+    ChannelInfo channelInfo = vData.value<ChannelInfo>();
+    QAction* play_action = findActionByName(ui->toolBar, "Play");
+    if (play_action)
+    {
+        if(channelInfo.chType()=="Radio")
+        {
+            play_action->setEnabled(true);
+        }
+        else
+            play_action->setEnabled(false);
+    }
+    displayChannel(channelInfo);
+
 }
 
