@@ -1,5 +1,6 @@
 <RCC>
     <qresource prefix="/toolbar/icons">
         <file>media/icons/refresh.png</file>
+        <file>media/icons/play-button.png</file>
     </qresource>
 </RCC>

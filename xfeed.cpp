@@ -43,8 +43,14 @@ void XFeed::fill_tool_bar()
         ui->textBrowser->clear();
         xmodel_.fetchChannel(ui->xtree->currentIndex());
     });
-    ui->toolBar->addAction(refresh_act);
+    /* Media player buttons */
+    QAction *play_btn = new QAction("Play", this);
+    play_btn->setIcon(QIcon(":/toolbar/icons/media/icons/play-button.png"));
 
+
+    ui->toolBar->addAction(refresh_act);
+    ui->toolBar->addSeparator();
+    ui->toolBar->addAction(play_btn);
 }
 
 
@@ -141,10 +147,16 @@ void XFeed::on_xtree_doubleClicked(const QModelIndex &index)
     /* First check the type of the channel */
     QVariant vData = model_->data(index, Qt::UserRole + 5);
     ChannelInfo channelInfo = vData.value<ChannelInfo>();
+
     if(channelInfo.chType() == "RSS")
     {
         ui->textBrowser->clear();
         xmodel_.fetchChannel(index);
+    }
+    else if (channelInfo.chType() == "Radio")
+    {
+        // play the station
+        displayChannel(channelInfo);
     }
 }
 
