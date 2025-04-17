@@ -91,13 +91,9 @@ void XFeedModel::editChannel(const QModelIndex& idx, const ChannelInfo &channelI
     model_->itemFromIndex(idx)->setData(QVariant::fromValue(channelInfo), Qt::UserRole + 5);
 
     QMap<int, QVariant> itemdata;
-    itemdata.insert(Qt::UserRole, channelInfo.getChName());
-    itemdata.insert(Qt::UserRole + 1, channelInfo.getChAddr());
-    itemdata.insert(Qt::UserRole + 3, channelInfo.chFolder());
+
     itemdata.insert(Qt::UserRole + 5, QVariant::fromValue(channelInfo));
 
-    qDebug()<<"Type from Dialog: "<<channelInfo.chType();
-    // itemdata.insert(Qt::UserRole + 2, channelInfo.chUUID().toString());
 
     bool success = model_->setItemData(idx, itemdata);
     if(success)
@@ -105,7 +101,7 @@ void XFeedModel::editChannel(const QModelIndex& idx, const ChannelInfo &channelI
         QStandardItem* item = model_->itemFromIndex(idx);
         item->setText(channelInfo.getChName());  // Update the visible text!
 
-        emit model_->dataChanged(idx.parent(), idx, {Qt::DisplayRole, Qt::EditRole, Qt::UserRole, Qt::UserRole + 1, Qt::UserRole + 5});
+        emit model_->dataChanged(idx.parent(), idx, {Qt::DisplayRole, Qt::EditRole, Qt::UserRole + 5});
 
         editJsonDatabase(idx);
     }
@@ -210,12 +206,12 @@ void XFeedModel::editJsonDatabase(const QModelIndex& idx)
         QJsonObject channel = channelsArray[i].toObject();
         if ((channel["uuid"].toString() == uuid) && (channel["type"].toString() == chInfo.chType())) {
             channel["name"] = chInfo.getChName();
-            qDebug()<<chInfo.getChName();
+
             channel["url"] = chInfo.getChAddr();//model_->data(idx, Qt::UserRole + 1).toString();
             channel["folderName"] = chInfo.chFolder();//model_->data(idx, Qt::UserRole + 3).toString();
             channelsArray[i] = channel; // Update the array
             updated = true;
-            qDebug()<<"Item found and edited, going to write into file";
+
             break;
         }
     }
@@ -224,10 +220,6 @@ void XFeedModel::editJsonDatabase(const QModelIndex& idx)
         root["Channels"] = channelsArray;
 
         jsonAdapter_.exportToJson(QJsonDocument(root));
-    }
-    else
-    {
-        qErrnoWarning("Ops, item not found!");
     }
 }
 
@@ -238,14 +230,13 @@ void XFeedModel::deleteItemFromJsonDatabase(const QModelIndex &idx)
     QJsonArray channelsArray = root["Channels"].toArray();
 
     auto uuid = model_->data(idx, Qt::UserRole + 2).toString();
-    qDebug()<<"UUID:"<<uuid;
+
     for(auto it = channelsArray.begin(); it != channelsArray.end(); ++it)
     {
         QJsonObject ch = it->toObject();
 
         if((ch["uuid"].toString() == uuid))
         {
-            qDebug()<<"Channel Found for Deleting! in JSON";
             channelsArray.erase(it);
             break;
         }

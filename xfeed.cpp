@@ -87,7 +87,7 @@ void XFeed::on_xtree_customContextMenuRequested(const QPoint &pos)
     QModelIndex index = ui->xtree->indexAt(pos);
     if(index.isValid())
     {
-        if(index.parent().isValid())
+        if(index.parent().isValid() && (index.parent().data(Qt::UserRole + 1).toString() != "Type"))
         {
             QAction* act_edit = new QAction("Edit Channel", this);
             connect(act_edit, &QAction::triggered, this, [this, index]() { onEditChannel(index); });

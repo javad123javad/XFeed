@@ -72,6 +72,7 @@ void ChannelModelBuilder::addChannels(const QJsonArray &channelsArray)
                 folderItem->appendRow(channelItem.release());
             }
             typeItem->appendRow(folderItem);
+            typeItem->setData(QVariant("Type"), Qt::UserRole +1);
         }
         model_->appendRow(typeItem);
     }
