@@ -88,18 +88,15 @@ void XFeedModel::editChannel(const QModelIndex& idx, const ChannelInfo &channelI
         qWarning() << "Model is null in editChannel";
         return;
     }
-
-    QStandardItem* folderItem = findFolder(channelInfo.chFolder());
-    if (!folderItem) {
-        qWarning() << "Folder not found: " << channelInfo.chFolder();
-        return;
-    }
-
+    model_->itemFromIndex(idx)->setData(QVariant::fromValue(channelInfo), Qt::UserRole + 5);
 
     QMap<int, QVariant> itemdata;
     itemdata.insert(Qt::UserRole, channelInfo.getChName());
     itemdata.insert(Qt::UserRole + 1, channelInfo.getChAddr());
+    itemdata.insert(Qt::UserRole + 3, channelInfo.chFolder());
+    itemdata.insert(Qt::UserRole + 5, QVariant::fromValue(channelInfo));
 
+    qDebug()<<"Type from Dialog: "<<channelInfo.chType();
     // itemdata.insert(Qt::UserRole + 2, channelInfo.chUUID().toString());
 
     bool success = model_->setItemData(idx, itemdata);
@@ -108,7 +105,8 @@ void XFeedModel::editChannel(const QModelIndex& idx, const ChannelInfo &channelI
         QStandardItem* item = model_->itemFromIndex(idx);
         item->setText(channelInfo.getChName());  // Update the visible text!
 
-        emit model_->dataChanged(idx, idx, {Qt::DisplayRole, Qt::EditRole, Qt::UserRole, Qt::UserRole + 1});
+        emit model_->dataChanged(idx.parent(), idx, {Qt::DisplayRole, Qt::EditRole, Qt::UserRole, Qt::UserRole + 1, Qt::UserRole + 5});
+
         editJsonDatabase(idx);
     }
 }
@@ -142,7 +140,8 @@ void XFeedModel::deleteFolder(const QModelIndex &index)
     QJsonObject root = jdoc.object();
     QJsonArray channels = root["Channels"].toArray();
 
-    QString folderName = model_->data(index,Qt::UserRole + 1).toString();
+    QString folderName = model_->data(index,Qt::UserRole + 5).value<ChannelInfo>().chFolder();
+
     //First delete all channels in this folder
     for (int i = channels.size() - 1; i >= 0; --i) {
         if (channels[i].toObject()["folderName"].toString() == folderName) {
@@ -169,18 +168,8 @@ void XFeedModel::deleteFolder(const QModelIndex &index)
 
 void XFeedModel::fetchChannel(const QModelIndex &index)
 {
-    QString url = model_->data(index, Qt::UserRole+1).toString();
+    QString url = model_->data(index, Qt::UserRole+5).value<ChannelInfo>().getChAddr();
     net_manager->get(QNetworkRequest(QUrl(url)));
-    // QMediaPlayer *player = new QMediaPlayer(this);
-    // QAudioOutput *audioOutput = new QAudioOutput(this);
-    // player->setAudioOutput(audioOutput);
-    // // connect(player, &QMediaPlayer::positionChanged, this, &MediaExample::positionChanged);
-    // player->setSource(QUrl("http://stream.radioparadise.com/mp3-192"));
-    // audioOutput->setVolume(50);
-    // player->play();
-
-
-
 }
 
 
@@ -209,19 +198,24 @@ void XFeedModel::editJsonDatabase(const QModelIndex& idx)
     auto jdoc = jsonAdapter_.getJsonDoc();
     QJsonObject root = jdoc.object();
     QJsonArray channelsArray = root["Channels"].toArray();
+    ChannelInfo chInfo = model_->data(idx, Qt::UserRole + 5).value<ChannelInfo>();
 
-    auto uuid = model_->data(idx, Qt::UserRole + 2).toString();
+    auto uuid = chInfo.chUUID().toString();
 
+    QString folderName = chInfo.chFolder();
 
     // Find and update the matching channel
     bool updated = false;
     for (int i = 0; i < channelsArray.size(); ++i) {
         QJsonObject channel = channelsArray[i].toObject();
-        if (channel["uuid"].toString() == uuid) {
-            channel["name"] = model_->data(idx, Qt::UserRole ).toString();;
-            channel["url"] = model_->data(idx, Qt::UserRole + 1).toString();
+        if ((channel["uuid"].toString() == uuid) && (channel["type"].toString() == chInfo.chType())) {
+            channel["name"] = chInfo.getChName();
+            qDebug()<<chInfo.getChName();
+            channel["url"] = chInfo.getChAddr();//model_->data(idx, Qt::UserRole + 1).toString();
+            channel["folderName"] = chInfo.chFolder();//model_->data(idx, Qt::UserRole + 3).toString();
             channelsArray[i] = channel; // Update the array
             updated = true;
+            qDebug()<<"Item found and edited, going to write into file";
             break;
         }
     }

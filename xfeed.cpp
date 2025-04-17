@@ -17,10 +17,7 @@ XFeed::XFeed(QWidget *parent)
     try {
 
         // XJSonAdapter jsonAdapter_();
-        model_ = xmodel_.getModelFromData(getDatabasePath());
-
-        ui->xtree->setModel(model_.get());
-        ui->xtree->expandAll();
+        refreshModel();
         connect(&xmodel_, &XFeedModel::feed_data_ready, this, &XFeed::on_feed_data_ready);
         // Setup toolbar
         fill_tool_bar();
@@ -119,19 +116,16 @@ void XFeed::on_xtree_customContextMenuRequested(const QPoint &pos)
 void XFeed::onEditChannel(QModelIndex idx)
 {
     ChannelInfo chInfo;
-    qDebug()<<(model_->itemFromIndex(idx)->data().toString());
-    chInfo.setChName(model_->itemFromIndex(idx)->data(Qt::UserRole).toString());
-    chInfo.setChAddr(model_->itemFromIndex(idx)->data(Qt::UserRole + 1).toString());
-    chInfo.setChUUID(QUuid::fromString(model_->itemFromIndex(idx)->data(Qt::UserRole + 2).toString()));
-    chInfo.setChFolder(model_->itemFromIndex(idx)->data(Qt::UserRole + 3).toString());
-    chInfo.setChType(model_->itemFromIndex(idx)->data(Qt::UserRole + 4).toString());
+
+    chInfo = model_->itemFromIndex(idx)->data(Qt::UserRole+5).value<ChannelInfo>();
     AddChannel edit_channel(model_.get(), chInfo, this);
     edit_channel.setWindowTitle("Edit Channel");
     if(edit_channel.exec())
     {
-
         xmodel_.editChannel(idx, chInfo);
+        refreshModel();
     }
+
 }
 
 void XFeed::onDeleteChannel(QModelIndex indx)
@@ -271,6 +265,14 @@ QAction* XFeed::findActionByName(QToolBar* toolbar, const QString& name) {
         }
     }
     return nullptr;
+}
+
+void XFeed::refreshModel()
+{
+    model_ = xmodel_.getModelFromData(getDatabasePath());
+
+    ui->xtree->setModel(model_.get());
+    ui->xtree->expandAll();
 }
 void XFeed::connectMediaControls(QToolBar *toolbar)
 {

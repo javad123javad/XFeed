@@ -40,6 +40,7 @@ private:
     void connectMediaControls(QToolBar* toolbar);
     DisplayStrategy* strategy;
     QAction* findActionByName(QToolBar* toolbar, const QString& name);
+    void refreshModel();
 
 private slots:
     void on_actionAdd_Channel_triggered();

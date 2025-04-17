@@ -14,13 +14,25 @@ AddChannel::AddChannel(QStandardItemModel *model, ChannelInfo& chInfo, QWidget *
     ui->lin_ch_name->setText(chInfo.getChName());
 
     ui->cmb_ch_type->setModel(model);
-    //for(int j = 0; j < model->rowCount(); j++)
+    qDebug()<<"Folder to search:"<<chInfo.chFolder();
+    auto items = model->findItems(chInfo.chFolder(), Qt::MatchRecursive);
+    QModelIndex idx;
+    for(auto & item : items)
     {
-        for(int i =0 ; i < model->item(0,0)->rowCount(); i++)
+        if(item->parent()->text()== chInfo.chType())
         {
-            auto itemData = model->item(0,0)->child(i,0)->data();
-            ui->cmb_folder->addItem(itemData.toString(),itemData);
+
+            idx = item->parent()->index();
+            break;
         }
+    }
+    if(idx.isValid())
+    {
+    for(int i =0 ; i < model->item(idx.row(),0)->rowCount(); i++)
+    {
+        auto itemData = model->item(idx.row(),0)->child(i,0)->data();
+        ui->cmb_folder->addItem(itemData.toString(),itemData);
+    }
     }
     setCurrentFolder(chInfo.chFolder());
 }

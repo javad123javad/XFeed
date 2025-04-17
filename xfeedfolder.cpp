@@ -33,7 +33,6 @@ void XFeedFolder::setFolderName(const QString &newFolderName)
 {
     if(newFolderName.isEmpty())
     {
-        qDebug()<<"Empty f name???";
         throw std::invalid_argument("Folder name cannot be empty");
     }
     folderName_ = newFolderName;

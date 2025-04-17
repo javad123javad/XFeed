@@ -4,7 +4,7 @@
 #include <QString>
 #include "displaystrategy.h"
 #include "tableviewdisplaystrategy.h"
-
+#include "mediaplayerdisplaystrategy.h"
 
 class ChannelBehaviorRegistry
 {
@@ -15,7 +15,7 @@ private:
     ChannelBehaviorRegistry() {
         // Register default strategies
         displayStrategies_["RSS"] = std::make_shared<TableViewDisplayStrategy>();
-        // displayStrategies_["Radio"] = std::make_shared<MediaPlayerDisplayStrategy>();
+        displayStrategies_["Radio"] = std::make_shared<MediaPlayerDisplayStrategy>();
         // displayStrategies_["TV"] = std::make_shared<MediaPlayerDisplayStrategy>();
     }
 
