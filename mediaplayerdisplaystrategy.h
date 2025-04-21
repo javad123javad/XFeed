@@ -16,6 +16,9 @@ public:
     void stop() override;
     void setMuted(bool muted) override;
     void setVolume(int vol) override;
+    void displayMetaData(const ChannelInfo& channel);
+
+
 
 private:
     std::shared_ptr<QMediaPlayer> mediaPlayer;

@@ -156,10 +156,14 @@ void XFeed::on_xtree_doubleClicked(const QModelIndex &index)
         QAction* playAction = findActionByName(ui->toolBar, "Play");
         if(playAction)
         {
+            displayChannel(channelInfo);
+            if(strategy && strategy->isMediaPlaySupported())
+            {
+                strategy->play();
+            }
             playAction->setEnabled(true);
             playAction->setChecked(true);
         }
-        displayChannel(channelInfo);
     }
 }
 
@@ -302,18 +306,25 @@ void XFeed::on_xtree_clicked(const QModelIndex &index)
     /* First check the type of the channel */
     QVariant vData = model_->data(index, Qt::UserRole + 5);
     ChannelInfo channelInfo = vData.value<ChannelInfo>();
-    qDebug()<<channelInfo.getChAddr();
+
     QAction* play_action = findActionByName(ui->toolBar, "Play");
     if (play_action)
     {
-        if(channelInfo.chType()=="Radio")
-        {
-            play_action->setEnabled(true);
-        }
+        displayChannel(channelInfo, nullptr);
+
+        if(play_action->isChecked())
+            play_action->setChecked(false);
         else
-            play_action->setEnabled(false);
+        {
+
+            if(channelInfo.chType()=="Radio")
+            {
+                play_action->setEnabled(true);
+            }
+            else
+                play_action->setEnabled(false);
+        }
     }
-    displayChannel(channelInfo);
 
 }
 

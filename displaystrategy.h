@@ -15,6 +15,7 @@ public:
     virtual void stop(){};
     virtual void setMuted(bool muted){};
     virtual void setVolume(int vol){};
+    virtual void displayMetaData(const ChannelInfo& channel){};
 };
 
 #endif // DISPLAYSTRATEGY_H

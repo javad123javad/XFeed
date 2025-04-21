@@ -1,22 +1,19 @@
 #include "mediaplayerdisplaystrategy.h"
 #include <QToolBar>
+#include <QMediaMetaData>
+
 MediaPlayerDisplayStrategy::MediaPlayerDisplayStrategy():
     mediaPlayer(std::make_shared<QMediaPlayer>()),
     audioOut(std::make_shared<QAudioOutput>())
 {}
 
-void MediaPlayerDisplayStrategy::display(const ChannelInfo& channel, QWidget* container) {
-    // Create and configure QTableView for this channel
-
-    QToolBar * toolbar = (QToolBar*)(container);
-
+void MediaPlayerDisplayStrategy::display(const ChannelInfo& channel, QWidget* container)
+{
     mediaPlayer->setAudioOutput(audioOut.get());
-    // // connect(player, &QMediaPlayer::positionChanged, this, &MediaExample::positionChanged);
-    playSource = QUrl(channel.getChAddr());
-    mediaPlayer->setSource(playSource);
-    // audioOut->setVolume(50);
 
-    // Setup model, delegates, etc.
+    playSource = QUrl(channel.getChAddr());
+    if(!mediaPlayer->isPlaying())// Switch only when we are not playing
+        mediaPlayer->setSource(playSource);
 }
 
 void MediaPlayerDisplayStrategy::play()
@@ -39,4 +36,8 @@ void MediaPlayerDisplayStrategy::setMuted(bool muted)
 void MediaPlayerDisplayStrategy::setVolume(int vol)
 {
     audioOut->setVolume(vol);
+}
+
+void MediaPlayerDisplayStrategy::displayMetaData(const ChannelInfo &channel)
+{
 }
