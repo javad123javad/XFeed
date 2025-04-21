@@ -12,7 +12,8 @@ void MediaPlayerDisplayStrategy::display(const ChannelInfo& channel, QWidget* co
 
     mediaPlayer->setAudioOutput(audioOut.get());
     // // connect(player, &QMediaPlayer::positionChanged, this, &MediaExample::positionChanged);
-    mediaPlayer->setSource(QUrl(channel.getChAddr()));
+    playSource = QUrl(channel.getChAddr());
+    mediaPlayer->setSource(playSource);
     // audioOut->setVolume(50);
 
     // Setup model, delegates, etc.
@@ -20,6 +21,7 @@ void MediaPlayerDisplayStrategy::display(const ChannelInfo& channel, QWidget* co
 
 void MediaPlayerDisplayStrategy::play()
 {
+    mediaPlayer->setSource(playSource);
     mediaPlayer->play();
 }
 

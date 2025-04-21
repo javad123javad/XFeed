@@ -2,13 +2,14 @@
 #include "./ui_xfeed.h"
 #include "addchannel.h"
 #include "addfolder.h"
-#include "xjsonadapter.h"
+#include "channelbehaviorregistry.h"
+
 #include <QMessageBox>
 #include <QDesktopServices>
 #include <QStandardPaths>
 #include <QDir>
 #include <QFileDialog>
-#include "channelbehaviorregistry.h"
+
 XFeed::XFeed(QWidget *parent)
     : QMainWindow(parent)
     , ui(new Ui::XFeed)
@@ -53,8 +54,6 @@ void XFeed::fill_tool_bar()
 
 
 }
-
-
 
 void XFeed::on_actionAdd_Channel_triggered()
 {
@@ -279,8 +278,6 @@ void XFeed::connectMediaControls(QToolBar *toolbar)
     QAction* play_btn = findActionByName(ui->toolBar,"Play");
     if(play_btn)
     {
-        qDebug()<<"Whay am I null!!!";
-
         connect(play_btn, &QAction::triggered, this, [this](bool toggeled){
 
             if(strategy && strategy->isMediaPlaySupported())
@@ -305,6 +302,7 @@ void XFeed::on_xtree_clicked(const QModelIndex &index)
     /* First check the type of the channel */
     QVariant vData = model_->data(index, Qt::UserRole + 5);
     ChannelInfo channelInfo = vData.value<ChannelInfo>();
+    qDebug()<<channelInfo.getChAddr();
     QAction* play_action = findActionByName(ui->toolBar, "Play");
     if (play_action)
     {

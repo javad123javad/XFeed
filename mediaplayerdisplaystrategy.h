@@ -20,6 +20,7 @@ public:
 private:
     std::shared_ptr<QMediaPlayer> mediaPlayer;
     std::shared_ptr<QAudioOutput> audioOut;
+    QUrl playSource;
 };
 
 #endif // MEDIAPLAYERDISPLAYSTRATEGY_H
