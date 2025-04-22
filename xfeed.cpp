@@ -9,7 +9,7 @@
 #include <QStandardPaths>
 #include <QDir>
 #include <QFileDialog>
-
+#include <QLabel>
 XFeed::XFeed(QWidget *parent)
     : QMainWindow(parent)
     , ui(new Ui::XFeed)
@@ -17,11 +17,15 @@ XFeed::XFeed(QWidget *parent)
     ui->setupUi(this);
     try {
 
-        // XJSonAdapter jsonAdapter_();
         refreshModel();
         connect(&xmodel_, &XFeedModel::feed_data_ready, this, &XFeed::on_feed_data_ready);
         // Setup toolbar
         fill_tool_bar();
+        // Status bar
+        lbl_radio = new QLabel(nullptr);
+        ui->statusbar->addPermanentWidget(lbl_radio);
+        lbl_radio->setText("Stopped");
+        lbl_radio->setObjectName("lbl_play");
     } catch (std::logic_error e) {
         QMessageBox::critical(this,"Database error",e.what());
         qDebug()<<e.what();
@@ -156,7 +160,7 @@ void XFeed::on_xtree_doubleClicked(const QModelIndex &index)
         QAction* playAction = findActionByName(ui->toolBar, "Play");
         if(playAction)
         {
-            displayChannel(channelInfo);
+            displayChannel(channelInfo, ui->statusbar);
             if(strategy && strategy->isMediaPlaySupported())
             {
                 strategy->play();
@@ -287,7 +291,9 @@ void XFeed::connectMediaControls(QToolBar *toolbar)
             if(strategy && strategy->isMediaPlaySupported())
             {
                 if(toggeled)
+                {
                     strategy->play();
+                }
                 else
                     strategy->stop();
             }
@@ -310,7 +316,7 @@ void XFeed::on_xtree_clicked(const QModelIndex &index)
     QAction* play_action = findActionByName(ui->toolBar, "Play");
     if (play_action)
     {
-        displayChannel(channelInfo, nullptr);
+        displayChannel(channelInfo, ui->statusbar);
 
         if(play_action->isChecked())
             play_action->setChecked(false);

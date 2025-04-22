@@ -10,6 +10,7 @@
 #include <QMenu>
 #include <QTextBrowser>
 #include <QMediaPlayer>
+#include <QLabel>
 #include "displaystrategy.h"
 
 QT_BEGIN_NAMESPACE
@@ -40,6 +41,7 @@ private:
     void connectMediaControls(QToolBar* toolbar);
     DisplayStrategy* strategy;
     QAction* findActionByName(QToolBar* toolbar, const QString& name);
+    QLabel * lbl_radio;
     void refreshModel();
 
 private slots:
