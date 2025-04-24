@@ -23,18 +23,23 @@ AddChannel::AddChannel(QStandardItemModel *model, ChannelInfo& chInfo, QWidget *
         {
 
             idx = item->parent()->index();
+            qDebug()<<"Current Type:"<<chInfo.chType();
+            ui->cmb_ch_type->setEditText(chInfo.chType());
+
             break;
         }
     }
     if(idx.isValid())
     {
-    for(int i =0 ; i < model->item(idx.row(),0)->rowCount(); i++)
-    {
-        auto itemData = model->item(idx.row(),0)->child(i,0)->data();
-        ui->cmb_folder->addItem(itemData.toString(),itemData);
-    }
+        for(int i =0 ; i < model->item(idx.row(),0)->rowCount(); i++)
+        {
+            auto itemData = model->item(idx.row(),0)->child(i,0)->data();
+            ui->cmb_folder->addItem(itemData.toString(),itemData);
+        }
     }
     setCurrentFolder(chInfo.chFolder());
+    auto indx = ui->cmb_ch_type->findText(chInfo.chType());
+    ui->cmb_ch_type->setCurrentIndex(indx);
 }
 
 AddChannel::~AddChannel()
