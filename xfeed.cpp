@@ -195,19 +195,12 @@ void XFeed::on_tableView_clicked(const QModelIndex &index)
         return;
     }
 
-    // Replace <img> tags with their src URL or alt text
-    QRegularExpression imgRegex("<img\\s+[^>]*src=\"([^\"]+)\"[^>]*alt=\"([^\"]*)\"[^>]*>",
-                                QRegularExpression::CaseInsensitiveOption);
-    QString modifiedHtml = descriptionHtml;
-
-    // Replace with clickable link (src URL)
-    modifiedHtml.replace(imgRegex, "<a href=\"\\1\">Image Link: \\1</a>");
-
+    QString modfiedHtml = polishHtmlData(descriptionHtml);
     // Configure QTextBrowser
     ui->textBrowser->setOpenExternalLinks(true);  // Enable clickable links
     ui->textBrowser->setWordWrapMode(QTextOption::WrapAtWordBoundaryOrAnywhere);
     ui->textBrowser->setSearchPaths({});          // Clear any local search paths
-    ui->textBrowser->setHtml(modifiedHtml);       // Set the modified HTML
+    ui->textBrowser->setHtml(modfiedHtml);       // Set the modified HTML
 }
 
 
@@ -280,6 +273,18 @@ void XFeed::refreshModel()
 
     ui->xtree->setModel(model_.get());
     ui->xtree->expandAll();
+}
+
+QString XFeed::polishHtmlData(QString& htmlIn)
+{
+    // Replace <img> tags with their src URL or alt text
+    QRegularExpression imgRegex("<img\\s+[^>]*src=\"([^\"]+)\"[^>]*alt=\"([^\"]*)\"[^>]*>",
+                                QRegularExpression::CaseInsensitiveOption);
+    QString modifiedHtml = htmlIn;
+
+    // Replace with clickable link (src URL)
+    modifiedHtml.replace(imgRegex, "<a href=\"\\1\">Image Link: \\1</a>");
+    return modifiedHtml;
 }
 void XFeed::connectMediaControls(QToolBar *toolbar)
 {

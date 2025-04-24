@@ -43,6 +43,7 @@ private:
     QAction* findActionByName(QToolBar* toolbar, const QString& name);
     QLabel * lbl_radio;
     void refreshModel();
+    QString polishHtmlData(QString& htmlIn);
 
 private slots:
     void on_actionAdd_Channel_triggered();
